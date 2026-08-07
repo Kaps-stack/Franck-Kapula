@@ -1,0 +1,43 @@
+*.log
+*.DS_Store
+
+# Environment
+.env
+.env.backup
+.env.production
+
+# IDE / editors
+.phpactor.json
+.phpunit.result.cache
+.codex/
+.cursor/
+.idea/
+.nova/
+.phpunit.cache/
+.vscode/
+.zed/
+auth.json
+
+# Dependencies
+/node_modules
+/vendor
+
+# Build files
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+
+# Laravel storage
+/storage/*.key
+/storage/pail
+
+# Laravel generated files
+_ide_helper.php
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# OS
+Thumbs.db
