@@ -1,11 +1,12 @@
 # ==============================
 # Stage 1 : Frontend
 # ==============================
+
 FROM node:22-alpine AS frontend
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 RUN npm ci
 
@@ -18,9 +19,15 @@ RUN npm run build
 # ==============================
 # Stage 2 : Laravel
 # ==============================
+
 FROM php:8.4-cli
 
 WORKDIR /var/www/html
+
+# ==============================
+# Installation des dépendances
+# système et extensions PHP
+# ==============================
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -38,9 +45,25 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+
+# ==============================
+# Composer
+# ==============================
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY composer.json composer.lock ./
+
+# ==============================
+# Copier toute l'application
+# ==============================
+
+COPY . .
+
+
+# ==============================
+# Installation des dépendances
+# Laravel
+# ==============================
 
 RUN composer install \
     --no-dev \
@@ -48,19 +71,45 @@ RUN composer install \
     --prefer-dist \
     --optimize-autoloader
 
-COPY . .
 
+# ==============================
 # Assets Filament
+# ==============================
+
 RUN php artisan filament:assets
 
+
+# ==============================
 # Assets Vite
+# ==============================
+
 COPY --from=frontend /app/public/build ./public/build
+
+
+# ==============================
+# Permissions Laravel
+# ==============================
 
 RUN chmod -R 777 storage bootstrap/cache
 
+
+# ==============================
+# Storage link
+# ==============================
+
 RUN php artisan storage:link || true
 
+
+# ==============================
+# Port
+# ==============================
+
 EXPOSE 8000
+
+
+# ==============================
+# Démarrage
+# ==============================
 
 CMD php artisan config:clear \
     && php artisan migrate --force \
