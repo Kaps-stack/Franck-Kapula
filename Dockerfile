@@ -1,48 +1,68 @@
+# ==============================
+# Stage 1 : Frontend
+# ==============================
+FROM node:22-alpine AS frontend
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY resources ./resources
+COPY vite.config.js ./
+
+RUN npm run build
+
+
+# ==============================
+# Stage 2 : Laravel
+# ==============================
 FROM php:8.4-cli
 
 WORKDIR /var/www/html
 
-# Dépendances système + extensions PHP
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libzip-dev \
-    libsqlite3-dev \
+    libpq-dev \
     libonig-dev \
     libicu-dev \
     && docker-php-ext-install \
-        pdo \
-        pdo_sqlite \
-        zip \
-        mbstring \
-        intl \
+    pdo \
+    pdo_pgsql \
+    zip \
+    mbstring \
+    intl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Application
-COPY . .
+COPY composer.json composer.lock ./
 
-# Dépendances PHP
 RUN composer install \
     --no-dev \
-    --optimize-autoloader \
-    --no-interaction
+    --no-interaction \
+    --prefer-dist \
+    --optimize-autoloader
 
-# Permissions Laravel
-RUN chmod -R 775 storage bootstrap/cache
+COPY . .
 
-# Créer les dossiers nécessaires
-RUN mkdir -p database storage/app/public
+# Assets Filament
+RUN php artisan filament:assets
 
-# Lien storage
+# Assets Vite
+COPY --from=frontend /app/public/build ./public/build
+
+RUN chmod -R 777 storage bootstrap/cache
+
 RUN php artisan storage:link || true
 
 EXPOSE 8000
 
-CMD php artisan config:clear && \
-    php artisan migrate --force && \
-    php artisan optimize:clear && \
-    php artisan serve --host=0.0.0.0 --port=${PORT}
+CMD php artisan config:clear \
+    && php artisan migrate --force \
+    && php artisan optimize:clear \
+    && php artisan serve --host=0.0.0.0 --port=$PORT
