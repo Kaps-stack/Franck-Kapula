@@ -24,6 +24,7 @@ FROM php:8.4-cli
 
 WORKDIR /var/www/html
 
+
 # ==============================
 # Installation des dépendances
 # système et extensions PHP
@@ -61,8 +62,7 @@ COPY . .
 
 
 # ==============================
-# Installation des dépendances
-# Laravel
+# Installation des dépendances Laravel
 # ==============================
 
 RUN composer install \
@@ -80,7 +80,7 @@ RUN php artisan filament:assets
 
 
 # ==============================
-# Assets Vite
+# Assets Vite de l'application
 # ==============================
 
 COPY --from=frontend /app/public/build ./public/build
