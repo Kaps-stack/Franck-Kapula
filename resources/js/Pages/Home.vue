@@ -1,10 +1,5 @@
 <script setup>
-import {
-    ref,
-    onMounted,
-    onBeforeUnmount,
-    nextTick,
-} from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 
 import { Head, Link } from "@inertiajs/vue3";
 import lottie from "lottie-web";
@@ -116,7 +111,6 @@ onBeforeUnmount(() => {
     }
 });
 
-
 const formatMonthYear = (date) => {
     if (!date) {
         return "";
@@ -138,8 +132,7 @@ const formatMonthYear = (date) => {
 <template>
     <Head :title="profile?.full_name || 'Franck Kapula'" />
 
-    <div class="bg-[#08090d] text-white ">
-
+    <div class="bg-[#08090d] text-white">
         <!-- ========================================================= -->
         <!-- HERO -->
         <!-- ========================================================= -->
@@ -147,11 +140,9 @@ const formatMonthYear = (date) => {
         <section
             class="relative flex min-h-screen items-center overflow-hidden bg-[#001d3d] px-6 pt-24"
         >
-
             <!-- ===================================================== -->
             <!-- SPLASH BACKGROUND -->
             <!-- ===================================================== -->
-
 
             <!-- ===================================================== -->
             <!-- HERO CONTENT -->
@@ -160,7 +151,6 @@ const formatMonthYear = (date) => {
             <div
                 class="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-12 lg:flex-row lg:gap-16"
             >
-
                 <!-- ================================================= -->
                 <!-- TEXT CONTENT -->
                 <!-- ================================================= -->
@@ -168,14 +158,11 @@ const formatMonthYear = (date) => {
                 <div
                     class="relative z-20 mt-6 w-full max-w-3xl text-center lg:text-left"
                 >
-
                     <!-- Greeting -->
                     <Small
-                        class=" font-sans inline-block rounded-xl bg-[#6B21A8]/20 px-4 py-2 text-white"
+                        class="font-sans inline-block rounded-xl bg-[#6B21A8]/20 px-4 py-2 text-white"
                     >
-                        <i
-                            class="fa-solid fa-hand-peace text-amber-100"
-                        ></i>
+                        <i class="fa-solid fa-hand-peace text-amber-100"></i>
 
                         Hi, je suis
                         {{ profile?.full_name || "Franck Kapula" }}
@@ -185,29 +172,20 @@ const formatMonthYear = (date) => {
                     <div
                         class="mt-7 flex items-center justify-center lg:justify-start"
                     >
-                        <Heading
-                            class="bitcount text-4xl text-white"
-                        >
-                            <span class="text-[#ff02ab]">
-                                Un
-                            </span>
+                        <h1 class="bitcount text-4xl text-white">
+                            <span class="text-[#ff02ab]"> Un </span>
 
                             {{ profile?.title || "Software Developer" }}
 
                             <span class="text-[#ff02ab]">
-                                Qui Transforme vos idées en solutions
-                                concrètes
+                                Qui Transforme vos idées en solutions concrètes
                             </span>
-                        </Heading>
+                        </h1>
                     </div>
 
                     <!-- Bio -->
-                    <div
-                        class="mx-auto mt-6 max-w-3xl lg:mx-0"
-                    >
-                        <Body
-                            class="font-sans text-justify text-white/80"
-                        >
+                    <div class="mx-auto mt-6 max-w-3xl lg:mx-0">
+                        <Body class="font-sans text-justify text-white/80">
                             {{
                                 profile?.bio.substring(0, 500) + "..." ||
                                 "Je transforme des idées en expériences numériques utiles, modernes et accessibles."
@@ -217,7 +195,7 @@ const formatMonthYear = (date) => {
 
                     <!-- Button -->
                     <div
-                        class=" font-sans mt-10 flex justify-center lg:justify-start"
+                        class="font-sans mt-10 flex justify-center lg:justify-start"
                     >
                         <Link
                             href="/game"
@@ -247,420 +225,358 @@ const formatMonthYear = (date) => {
             </div>
         </section>
 
-       <!-- ========================================================= -->
-<!-- PROJECTS -->
-<!-- ========================================================= -->
+        <!-- ========================================================= -->
+        <!-- PROJECTS -->
+        <!-- ========================================================= -->
 
-<section
-    id="projects"
-    class="relative bg-[#00574b] px-6 py-32"
->
-    <div class="mx-auto max-w-7xl">
-
-        <!-- ===================================================== -->
-        <!-- HEADING -->
-        <!-- ===================================================== -->
-
-        <div
-            class="mb-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
-        >
-            <div>
-
-
-                <div class="mt-3">
-                    <Title class="text-white font-sans">
-                       01 — Mes projets
-                    </Title>
-                </div>
-            </div>
-
-            <Body class="font-sans max-w-md text-slate-400 sm:text-right">
-                Quelques projets sur lesquels j'ai travaillé et
-                les solutions que j'ai développées.
-            </Body>
-        </div>
-
-        <!-- ===================================================== -->
-        <!-- PROJECTS GRID -->
-        <!-- ===================================================== -->
-
-        <div
-            v-if="projects?.length"
-            class="grid grid-cols-1 gap-8 lg:grid-cols-2"
-        >
-            <article
-                v-for="(project, index) in projects"
-                :key="project.id"
-                class="group overflow-hidden rounded-3xl border border-white/10 bg-[#02302a] transition duration-300 hover:border-white/20"
-            >
-
-                <!-- ================================================= -->
-                <!-- IMAGE -->
-                <!-- ================================================= -->
+        <section id="projects" class="relative bg-[#00574b] px-6 py-32">
+            <div class="mx-auto max-w-7xl">
+                <!-- ===================================================== -->
+                <!-- HEADING -->
+                <!-- ===================================================== -->
 
                 <div
-                    class="relative aspect-[16/10] overflow-hidden bg-[#202126]"
+                    class="mb-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
                 >
-                    <img
-                        v-if="project.image"
-                        :src="project.image"
-                        :alt="project.title"
-                        class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-
-                    <!-- Placeholder -->
-                    <div
-                        v-else
-                        class="flex h-full items-center justify-center bg-[#202126]"
-                    >
-                        <span
-                            class="text-[7rem] font-black tracking-tighter text-white/5"
-                        >
-                            {{
-                                String(index + 1).padStart(
-                                    2,
-                                    "0",
-                                )
-                            }}
-                        </span>
-                    </div>
-
-                    <!-- Number -->
-                    <div
-                        class="absolute left-5 top-5 rounded-lg bg-[#111216]/80 px-3 py-2 backdrop-blur-sm"
-                    >
-                        <Small
-                            class="font-mono font-sans text-slate-400"
-                        >
-                            {{
-                                String(index + 1).padStart(
-                                    2,
-                                    "0",
-                                )
-                            }}
-                        </Small>
-                    </div>
-                </div>
-
-                <!-- ================================================= -->
-                <!-- CONTENT -->
-                <!-- ================================================= -->
-
-                <div class="p-6 sm:p-8">
-
-                    <!-- Title -->
-                    <Title
-                        size="md"
-                        class="text-white font-sans"
-                    >
-                        {{ project.title }}
-                    </Title>
-
-                    <!-- Description -->
-                    <div class="mt-4">
-                        <Body class="text-slate-400 font-sans">
-                            {{ project.description }}
-                        </Body>
-                    </div>
-
-                    <!-- Link -->
-                    <div class="mt-7">
-                        <Link
-                            :href="`/projects/${project.id}`"
-                            class="inline-flex items-center gap-3 border-b border-white/20 pb-1 text-white transition hover:border-white"
-                        >
-                            <Small class="text-white font-sans">
-                                Voir le projet
-                            </Small>
-
-                            <span>
-                                ↗
-                            </span>
-                        </Link>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-        <!-- ===================================================== -->
-        <!-- EMPTY STATE -->
-        <!-- ===================================================== -->
-
-        <div
-            v-else
-            class="rounded-3xl border border-dashed border-white/10 bg-[#191a1f] p-16 text-center"
-        >
-            <Body class="text-slate-500 font-sans">
-                Aucun projet disponible pour le moment.
-            </Body>
-        </div>
-
-        <!-- ===================================================== -->
-        <!-- ALL PROJECTS BUTTON -->
-        <!-- ===================================================== -->
-
-        <div
-            v-if="projects?.length"
-            class="mt-14 flex justify-center"
-        >
-            <Link
-                href="/game"
-                class="inline-flex items-center gap-3 rounded-full border border-white/15 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
-            >
-                <Small class="text-white font-sans">
-                    Voir tous les projets
-                </Small>
-
-                <span>
-                    →
-                </span>
-            </Link>
-        </div>
-    </div>
-</section>
-
-      <!-- ========================================================= -->
-<!-- EXPERIENCE -->
-<!-- ========================================================= -->
-
-<section
-    id="experience"
-    class="relative border-y border-white/10 bg-[#0d0e13] px-6 py-32"
->
-    <div class="mx-auto max-w-7xl">
-
-        <!-- Heading -->
-        <div class="mb-20">
-            <Title class="font-sans text-white">
-                02 — Experience
-            </Title>
-
-            <div class="mt-4">
-                <Heading class="font-sans text-indigo-400">
-                    Mon parcours professionnel
-                </Heading>
-            </div>
-        </div>
-
-        <!-- Experiences -->
-        <div
-            v-if="experiences?.length"
-            class="relative ml-2 border-l border-white/10"
-        >
-            <article
-                v-for="experience in experiences"
-                :key="experience.id"
-                class="relative pb-16 pl-8 last:pb-0 sm:pl-12"
-            >
-                <!-- Timeline dot -->
-                <span
-                    class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-indigo-400 ring-8 ring-[#0d0e13]"
-                ></span>
-
-                <div
-                    class="grid gap-6 md:grid-cols-[180px_1fr]"
-                >
-                    <!-- Date -->
                     <div>
-                        <Small class="text-slate-500 font-sans">
-                            {{ formatMonthYear(experience.start_date) }}
+                        <div class="mt-3">
+                            <Title class="text-white font-sans">
+                                01 — Mes projets
+                            </Title>
+                        </div>
+                    </div>
 
-                            —
+                    <Body
+                        class="font-sans max-w-md text-slate-400 sm:text-right"
+                    >
+                        Quelques projets sur lesquels j'ai travaillé et les
+                        solutions que j'ai développées.
+                    </Body>
+                </div>
 
-                            <span v-if="experience.end_date">
-                                {{ formatMonthYear(experience.end_date) }}
-                            </span>
+                <!-- ===================================================== -->
+                <!-- PROJECTS GRID -->
+                <!-- ===================================================== -->
 
-                            <span
+                <div
+                    v-if="projects?.length"
+                    class="grid grid-cols-1 gap-8 lg:grid-cols-2"
+                >
+                    <article
+                        v-for="(project, index) in projects"
+                        :key="project.id"
+                        class="group overflow-hidden rounded-3xl border border-white/10 bg-[#02302a] transition duration-300 hover:border-white/20"
+                    >
+                        <!-- ================================================= -->
+                        <!-- IMAGE -->
+                        <!-- ================================================= -->
+
+                        <div
+                            class="relative aspect-[16/10] overflow-hidden bg-[#202126]"
+                        >
+                            <img
+                                v-if="project.image"
+                                :src="project.image"
+                                :alt="project.title"
+                                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                            />
+
+                            <!-- Placeholder -->
+                            <div
                                 v-else
-                                class="text-indigo-400"
+                                class="flex h-full items-center justify-center bg-[#202126]"
                             >
-                                Présent
-                            </span>
-                        </Small>
-                    </div>
+                                <span
+                                    class="text-[7rem] font-black tracking-tighter text-white/5"
+                                >
+                                    {{ String(index + 1).padStart(2, "0") }}
+                                </span>
+                            </div>
 
-                    <!-- Experience -->
-                    <div>
-                        <Title class="font-sans text-white" size="md">
-                            {{ experience.position }}
-                        </Title>
-
-                        <div class="mt-2">
-                            <Small class="text-indigo-400 font-sans">
-                                {{ experience.company }}
-                            </Small>
+                            <!-- Number -->
+                            <div
+                                class="absolute left-5 top-5 rounded-lg bg-[#111216]/80 px-3 py-2 backdrop-blur-sm"
+                            >
+                                <Small
+                                    class="font-mono font-sans text-slate-400"
+                                >
+                                    {{ String(index + 1).padStart(2, "0") }}
+                                </Small>
+                            </div>
                         </div>
 
-                        <div class="mt-5 max-w-2xl">
-                            <Body class="text-slate-400 font-sans">
-                                {{ experience.description }}
-                            </Body>
+                        <!-- ================================================= -->
+                        <!-- CONTENT -->
+                        <!-- ================================================= -->
+
+                        <div class="p-6 sm:p-8">
+                            <!-- Title -->
+                            <Title size="md" class="text-white font-sans">
+                                {{ project.title }}
+                            </Title>
+
+                            <!-- Description -->
+                            <div class="mt-4">
+                                <Body class="text-slate-400 font-sans">
+                                    {{ project.description }}
+                                </Body>
+                            </div>
+
+                            <!-- Link -->
+                            <div class="mt-7">
+                                <Link
+                                    :href="`/projects/${project.id}`"
+                                    class="inline-flex items-center gap-3 border-b border-white/20 pb-1 text-white transition hover:border-white"
+                                >
+                                    <Small class="text-white font-sans">
+                                        Voir le projet
+                                    </Small>
+
+                                    <span> ↗ </span>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
+                    </article>
                 </div>
-            </article>
-        </div>
 
-        <!-- Empty state -->
-        <div v-else>
-            <Body class="text-slate-500 *:font-sans">
-                Aucune expérience disponible pour le moment.
-            </Body>
-        </div>
+                <!-- ===================================================== -->
+                <!-- EMPTY STATE -->
+                <!-- ===================================================== -->
 
-        <!-- ===================================================== -->
-        <!-- SEE ALL -->
-        <!-- ===================================================== -->
-
-        <div
-            v-if="experiences?.length"
-            class="mt-14 flex justify-center"
-        >
-            <Link
-                href="/experiences"
-                class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
-            >
-                <Small class="text-white">
-                    Voir au complet
-                </Small>
-
-                <span>
-                    →
-                </span>
-            </Link>
-        </div>
-
-    </div>
-</section>
-
-       <!-- ========================================================= -->
-<!-- EDUCATION -->
-<!-- ========================================================= -->
-
-<section
-    id="education"
-    class="bg-[#1f0025] px-6 py-32"
->
-    <div class="mx-auto max-w-7xl">
-
-        <!-- ===================================================== -->
-        <!-- HEADING -->
-        <!-- ===================================================== -->
-
-        <div class="mb-16">
-            <Title class="font-sans text-white">
-                03 — Education
-            </Title>
-
-            <div class="mt-4">
-                <Heading class="font-sans text-indigo-400">
-                    Formation
-                </Heading>
-            </div>
-        </div>
-
-        <!-- ===================================================== -->
-        <!-- EDUCATION -->
-        <!-- ===================================================== -->
-
-        <div
-            v-if="education?.length"
-            class="divide-y divide-white/10 border-y border-white/10"
-        >
-            <article
-                v-for="(item, index) in education"
-                :key="item.id"
-                class="grid gap-6 py-10 md:grid-cols-[100px_1fr_2fr] md:items-center"
-            >
-
-                <!-- Number -->
-                <Small
-                    class="font-mono text-slate-600"
+                <div
+                    v-else
+                    class="rounded-3xl border border-dashed border-white/10 bg-[#191a1f] p-16 text-center"
                 >
-                    {{
-                        String(index + 1).padStart(
-                            2,
-                            "0",
-                        )
-                    }}
-                </Small>
+                    <Body class="text-slate-500 font-sans">
+                        Aucun projet disponible pour le moment.
+                    </Body>
+                </div>
 
-                <!-- Formation -->
-                <div>
-                    <Title size="md">
-                        {{ item.degree }}
+                <!-- ===================================================== -->
+                <!-- ALL PROJECTS BUTTON -->
+                <!-- ===================================================== -->
+
+                <div v-if="projects?.length" class="mt-14 flex justify-center">
+                    <Link
+                        href="/game"
+                        class="inline-flex items-center gap-3 rounded-full border border-white/15 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
+                    >
+                        <Small class="text-white font-sans">
+                            Voir tous les projets
+                        </Small>
+
+                        <span> → </span>
+                    </Link>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- EXPERIENCE -->
+        <!-- ========================================================= -->
+
+        <section
+            id="experience"
+            class="relative border-y border-white/10 bg-[#0d0e13] px-6 py-32"
+        >
+            <div class="mx-auto max-w-7xl">
+                <!-- Heading -->
+                <div class="mb-20">
+                    <Title class="font-sans text-white">
+                        02 — Experience
                     </Title>
 
-                    <!-- Dates -->
-                    <div class="mt-2">
-                        <Small class="text-indigo-400">
-                            {{ formatMonthYear(item.start_date) }}
-
-                            —
-
-                            <span v-if="item.end_date">
-                                {{ formatMonthYear(item.end_date) }}
-                            </span>
-
-                            <span v-else>
-                                Présent
-                            </span>
-                        </Small>
-                    </div>
-
-                    <!-- Institution -->
-                    <div class="mt-2">
-                        <Small class="font-sans text-white">
-                            {{ item.institution }}
-                        </Small>
+                    <div class="mt-4">
+                        <Heading class="font-sans text-indigo-400">
+                            Mon parcours professionnel
+                        </Heading>
                     </div>
                 </div>
 
-                <!-- Description -->
-                <Body class="font-sans text-slate-400">
-                    {{ item.description }}
-                </Body>
-            </article>
-        </div>
+                <!-- Experiences -->
+                <div
+                    v-if="experiences?.length"
+                    class="relative ml-2 border-l border-white/10"
+                >
+                    <article
+                        v-for="experience in experiences"
+                        :key="experience.id"
+                        class="relative pb-16 pl-8 last:pb-0 sm:pl-12"
+                    >
+                        <!-- Timeline dot -->
+                        <span
+                            class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-indigo-400 ring-8 ring-[#0d0e13]"
+                        ></span>
 
-        <!-- ===================================================== -->
-        <!-- EMPTY STATE -->
-        <!-- ===================================================== -->
+                        <div class="grid gap-6 md:grid-cols-[180px_1fr]">
+                            <!-- Date -->
+                            <div>
+                                <Small class="text-slate-500 font-sans">
+                                    {{ formatMonthYear(experience.start_date) }}
 
-        <div v-else>
-            <Body class="text-slate-500">
-                Aucune formation disponible pour le moment.
-            </Body>
-        </div>
+                                    —
 
-        <!-- ===================================================== -->
-        <!-- SEE ALL -->
-        <!-- ===================================================== -->
+                                    <span v-if="experience.end_date">
+                                        {{
+                                            formatMonthYear(experience.end_date)
+                                        }}
+                                    </span>
 
-        <div
-            v-if="education?.length"
-            class="mt-14 flex justify-center"
-        >
-            <Link
-                href="/game"
-                class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
-            >
-                <Small class="text-white">
-                    Voir au complet
-                </Small>
+                                    <span v-else class="text-indigo-400">
+                                        Présent
+                                    </span>
+                                </Small>
+                            </div>
 
-                <span>
-                    →
-                </span>
-            </Link>
-        </div>
+                            <!-- Experience -->
+                            <div>
+                                <Title class="font-sans text-white" size="md">
+                                    {{ experience.position }}
+                                </Title>
 
-    </div>
-</section>
+                                <div class="mt-2">
+                                    <Small class="text-indigo-400 font-sans">
+                                        {{ experience.company }}
+                                    </Small>
+                                </div>
 
+                                <div class="mt-5 max-w-2xl">
+                                    <Body class="text-slate-400 font-sans">
+                                        {{ experience.description }}
+                                    </Body>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
 
+                <!-- Empty state -->
+                <div v-else>
+                    <Body class="text-slate-500 *:font-sans">
+                        Aucune expérience disponible pour le moment.
+                    </Body>
+                </div>
 
+                <!-- ===================================================== -->
+                <!-- SEE ALL -->
+                <!-- ===================================================== -->
+
+                <div
+                    v-if="experiences?.length"
+                    class="mt-14 flex justify-center"
+                >
+                    <Link
+                        href="/experiences"
+                        class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
+                    >
+                        <Small class="text-white"> Voir au complet </Small>
+
+                        <span> → </span>
+                    </Link>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- EDUCATION -->
+        <!-- ========================================================= -->
+
+        <section id="education" class="bg-[#1f0025] px-6 py-32">
+            <div class="mx-auto max-w-7xl">
+                <!-- ===================================================== -->
+                <!-- HEADING -->
+                <!-- ===================================================== -->
+
+                <div class="mb-16">
+                    <Title class="font-sans text-white"> 03 — Education </Title>
+
+                    <div class="mt-4">
+                        <Heading class="font-sans text-indigo-400">
+                            Formation
+                        </Heading>
+                    </div>
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- EDUCATION -->
+                <!-- ===================================================== -->
+
+                <div
+                    v-if="education?.length"
+                    class="divide-y divide-white/10 border-y border-white/10"
+                >
+                    <article
+                        v-for="(item, index) in education"
+                        :key="item.id"
+                        class="grid gap-6 py-10 md:grid-cols-[100px_1fr_2fr] md:items-center"
+                    >
+                        <!-- Number -->
+                        <Small class="font-mono text-slate-600">
+                            {{ String(index + 1).padStart(2, "0") }}
+                        </Small>
+
+                        <!-- Formation -->
+                        <div>
+                            <Title size="md">
+                                {{ item.degree }}
+                            </Title>
+
+                            <!-- Dates -->
+                            <div class="mt-2">
+                                <Small class="text-indigo-400">
+                                    {{ formatMonthYear(item.start_date) }}
+
+                                    —
+
+                                    <span v-if="item.end_date">
+                                        {{ formatMonthYear(item.end_date) }}
+                                    </span>
+
+                                    <span v-else> Présent </span>
+                                </Small>
+                            </div>
+
+                            <!-- Institution -->
+                            <div class="mt-2">
+                                <Small class="font-sans text-white">
+                                    {{ item.institution }}
+                                </Small>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <Body class="font-sans text-slate-400">
+                            {{ item.description }}
+                        </Body>
+                    </article>
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- EMPTY STATE -->
+                <!-- ===================================================== -->
+
+                <div v-else>
+                    <Body class="text-slate-500">
+                        Aucune formation disponible pour le moment.
+                    </Body>
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- SEE ALL -->
+                <!-- ===================================================== -->
+
+                <div v-if="education?.length" class="mt-14 flex justify-center">
+                    <Link
+                        href="/game"
+                        class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
+                    >
+                        <Small class="text-white"> Voir au complet </Small>
+
+                        <span> → </span>
+                    </Link>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
 
