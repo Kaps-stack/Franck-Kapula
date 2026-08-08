@@ -74,6 +74,8 @@ class AwardForm
     ->image()
     ->disk('public')
     ->directory('awards')
+    ->maxSize(20480)
+
     ->visibility('public')
     ->multiple(false)
     ->formatStateUsing(function ($state) {
