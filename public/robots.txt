@@ -1,2 +1,4 @@
 User-agent: *
-Disallow:
+Allow: /
+
+Sitemap: https://franck-kapula.onrender.com/sitemap.xml
