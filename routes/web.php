@@ -15,6 +15,12 @@ use App\Http\Controllers\InterestController;
 
 
 
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok'
+    ]);
+});
+
 Route::get('/', [ProfileController::class, 'index'])
     ->name('profile.index');
 Route::get('/projects', [ProjectController::class, 'index'])
