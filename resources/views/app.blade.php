@@ -8,6 +8,8 @@
         content="width=device-width, initial-scale=1"
     >
 
+    <meta name="msvalidate.01" content="4B8D68EF1D15A7F3B628F9BD9592C4D4" >
+
     <title inertia>
         {{ config('app.name', 'Portefolio') }}
     </title>
