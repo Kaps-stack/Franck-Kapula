@@ -30,7 +30,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="min-h-screen bg-[#08090d] text-white">
+    <div class="min-h-[100dvh] bg-[#08090d] text-white">
 
         <!-- ================================================= -->
         <!-- MAIN CONTENT -->
