@@ -8,6 +8,8 @@
         content="width=device-width, initial-scale=1"
     >
 
+    <meta name="google-site-verification" content="T_8eay46UNY00kdT2RFlXsZYiegczi--il81QN-hvBI" />
+
     <title inertia>
         Franck Kapula — Développeur Full Stack | Portfolio
     </title>
