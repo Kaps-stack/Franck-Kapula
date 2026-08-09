@@ -74,7 +74,14 @@ class ProjectForm
                     ->columns(2),
 
 
-
+                    Select::make('skills')
+                        ->label('Technologies utilisées')
+                        ->relationship('skills', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->searchable()
+                        ->placeholder('Sélectionner les technologies')
+                        ->columnSpanFull(),
 
                 Section::make('Description')
                     ->schema([

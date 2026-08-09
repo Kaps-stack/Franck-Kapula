@@ -112,7 +112,7 @@ const formatPeriod = (education) => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-[#1f0025] px-5 pb-32 pt-32 text-white sm:px-8 lg:px-12">
+    <div class="min-h-screen bg-[#00574b] px-5 pb-32 pt-32 text-white sm:px-8 lg:px-12">
         <div class="mx-auto max-w-7xl">
 
             <!-- ================================================= -->
@@ -193,15 +193,15 @@ const formatPeriod = (education) => {
                                 
                                 <!-- TITRES (degree, institution, institution_url, field) -->
                                 <div class="shrink-0">
-                                    <Heading class="font-sans text-2xl leading-tight text-white sm:text-3xl">
+                                    <Title class="font-sans text-2xl leading-tight text-white sm:text-3xl">
                                         {{ education.degree }}
-                                    </Heading>
+                                    </Title>
                                     
                                     <!-- Institution + Bouton URL externe -->
                                     <div class="mt-2 flex items-center gap-3">
-                                        <Title class="font-sans text-white/70">
+                                        <Small class="font-sans text-white/70">
                                             {{ education.institution }}
-                                        </Title>
+                                        </Small>
                                         
                                         <!-- Affiché uniquement si institution_url existe. @click.stop évite de retourner la carte -->
                                         <a

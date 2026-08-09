@@ -466,7 +466,7 @@ const formatMonthYear = (date) => {
                     class="mt-14 flex justify-center"
                 >
                     <Link
-                        href="/experiences"
+                        href="/game"
                         class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
                     >
                         <Small class="text-white"> Voir au complet </Small>
@@ -481,7 +481,7 @@ const formatMonthYear = (date) => {
         <!-- EDUCATION -->
         <!-- ========================================================= -->
 
-        <section id="education" class="bg-[#1f0025] px-6 py-32">
+        <section id="education" class="bg-[#00574b] px-6 py-32">
             <div class="mx-auto max-w-7xl">
                 <!-- ===================================================== -->
                 <!-- HEADING -->
