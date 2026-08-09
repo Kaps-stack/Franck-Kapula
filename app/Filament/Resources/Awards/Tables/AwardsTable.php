@@ -2,14 +2,12 @@
 
 namespace App\Filament\Resources\Awards\Tables;
 
-use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Schemas\Components\View;
+
 
 class AwardsTable
 {
@@ -19,14 +17,13 @@ class AwardsTable
             ->columns([
 
 
-
-
                 ImageColumn::make('image')
                     ->label('Image / Certificat')
-                    ->getStateUsing(fn ($record) => asset('storage/' . $record->image))
                     ->size(50)
-                    ->url(fn ($record) => asset('storage/' . $record->image))
+                    ->url(fn ($record) => $record->image)
                     ->openUrlInNewTab(),
+
+
 
                 TextColumn::make('title')
                     ->label('Titre')
@@ -67,8 +64,8 @@ class AwardsTable
                     ->url(fn ($record) => $record->url)
                     ->openUrlInNewTab(),
 
-            ])
 
+            ])
 
 
             ->bulkActions([

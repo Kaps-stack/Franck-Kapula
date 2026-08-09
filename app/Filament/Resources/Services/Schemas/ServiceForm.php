@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Filament\Resources\Services\Schemas;
+
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
@@ -8,6 +10,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+
 
 class ServiceForm
 {
@@ -48,8 +51,10 @@ class ServiceForm
 
 
 
+
                 Section::make('Description')
                     ->schema([
+
 
 
                         Textarea::make('description')
@@ -59,7 +64,9 @@ class ServiceForm
                             ->columnSpanFull(),
 
 
+
                     ]),
+
 
 
 
@@ -68,16 +75,18 @@ class ServiceForm
                     ->schema([
 
 
+
                         FileUpload::make('icon')
                             ->label('Icône du service')
                             ->placeholder('Importer une icône')
                             ->image()
-                            ->disk('public')
-                            ->directory('services')
-                            ->visibility('public'),
+                            ->disk('cloudinary')
+                            ->directory('services'),
+
 
 
                     ]),
+
 
 
             ]);

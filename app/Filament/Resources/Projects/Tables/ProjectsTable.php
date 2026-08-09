@@ -10,6 +10,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+
 class ProjectsTable
 {
     public static function configure(Table $table): Table
@@ -18,11 +19,10 @@ class ProjectsTable
             ->columns([
 
 
-                 ImageColumn::make('image')
-                    ->label('Image ')
-                    ->getStateUsing(fn ($record) => asset('storage/' . $record->image))
+                ImageColumn::make('image')
+                    ->label('Image')
                     ->size(50)
-                    ->url(fn ($record) => asset('storage/' . $record->image))
+                    ->url(fn ($record) => $record->image)
                     ->openUrlInNewTab(),
 
 
@@ -77,9 +77,11 @@ class ProjectsTable
 
             ])
 
+
             ->actions([
                 EditAction::make(),
             ])
+
 
 
             ->bulkActions([

@@ -50,20 +50,14 @@ let autoplayInterval = null;
 */
 
 const imageUrl = (award) => {
-    if (!award?.image) {
-        return null;
+
+    if (!award || !award.image) {
+        return null
     }
 
-    if (
-        award.image.startsWith("http://") ||
-        award.image.startsWith("https://")
-    ) {
-        return award.image;
-    }
+    return award.image
 
-    return `/storage/${award.image}`;
-};
-
+}
 
 /*
 |--------------------------------------------------------------------------

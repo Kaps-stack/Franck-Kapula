@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Filament\Resources\Skills\Tables;
+
 
 use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
@@ -10,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 
+
 class SkillsTable
 {
     public static function configure(Table $table): Table
@@ -18,17 +21,19 @@ class SkillsTable
             ->columns([
 
 
+
                 ImageColumn::make('icon')
-    ->label('Icône')
-    ->getStateUsing(fn ($record) => asset('storage/' . $record->icon))
-    ->size(50)
-    ->url(fn ($record) => asset('storage/' . $record->icon))
-    ->openUrlInNewTab(),
+                    ->label('Icône')
+                    ->size(50)
+                    ->url(fn ($record) => $record->icon)
+                    ->openUrlInNewTab(),
+
 
 
                 TextColumn::make('name')
                     ->label('Compétence')
                     ->searchable(),
+
 
 
 
@@ -38,9 +43,11 @@ class SkillsTable
 
 
 
+
                 TextColumn::make('level')
                     ->label('Niveau')
                     ->suffix('%'),
+
 
 
 
@@ -49,12 +56,17 @@ class SkillsTable
                     ->boolean(),
 
 
+
             ])
+
+
 
 
             ->actions([
                 EditAction::make(),
             ])
+
+
 
 
             ->bulkActions([

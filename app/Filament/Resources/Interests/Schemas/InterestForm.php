@@ -9,6 +9,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
+
 class InterestForm
 {
     public static function configure(Schema $schema): Schema
@@ -16,8 +17,10 @@ class InterestForm
         return $schema
             ->components([
 
+
                 Section::make('Centre d’intérêt')
                     ->schema([
+
 
                         TextInput::make('name')
                             ->label('Nom')
@@ -25,14 +28,24 @@ class InterestForm
                             ->required()
                             ->maxLength(255),
 
+
+
                         FileUpload::make('icon')
                             ->label('Icône')
                             ->image()
                             ->imageEditor()
-                            ->disk('public')
-                            ->directory('interests/icons')
-                            ->visibility('public')
-                            ->required(),
+                            ->required()
+                            ->saveUploadedFileUsing(function ($file) {
+
+                                return app(\App\Services\CloudinaryService::class)
+                                    ->upload(
+                                        $file,
+                                        'portfolio/interests'
+                                    );
+
+                            }),
+
+
 
                         TextInput::make('order')
                             ->label('Ordre d’affichage')
@@ -41,9 +54,13 @@ class InterestForm
                             ->minValue(0)
                             ->required(),
 
+
+
                         Toggle::make('featured')
                             ->label('Afficher dans les centres d’intérêt principaux')
                             ->default(false),
+
+
 
                         Textarea::make('description')
                             ->label('Description')
@@ -51,8 +68,10 @@ class InterestForm
                             ->rows(5)
                             ->columnSpanFull(),
 
+
                     ])
                     ->columns(2),
+
 
             ]);
     }

@@ -1,12 +1,15 @@
 <?php
 
+
 namespace App\Filament\Resources\Skills\Schemas;
+
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+
 
 class SkillForm
 {
@@ -16,8 +19,10 @@ class SkillForm
             ->components([
 
 
+
                 Section::make('Informations compétence')
                     ->schema([
+
 
 
                         TextInput::make('name')
@@ -27,10 +32,12 @@ class SkillForm
 
 
 
+
                         TextInput::make('category')
                             ->label('Catégorie')
                             ->placeholder('Backend, Frontend, Mobile...')
                             ->maxLength(255),
+
 
 
 
@@ -43,8 +50,10 @@ class SkillForm
 
 
 
+
                         Toggle::make('featured')
                             ->label('Afficher dans les compétences principales'),
+
 
 
                     ])
@@ -52,19 +61,22 @@ class SkillForm
 
 
 
+
                 Section::make('Icône')
                     ->schema([
+
 
 
                         FileUpload::make('icon')
                             ->label('Icône')
                             ->image()
-                            ->disk('public')
-                            ->directory('skills')
-                            ->visibility('public'),
+                            ->disk('cloudinary')
+                            ->directory('skills'),
+
 
 
                     ]),
+
 
 
             ]);

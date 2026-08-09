@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Filament\Resources\Services\Tables;
+
 
 use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
@@ -10,6 +12,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
+
 class ServicesTable
 {
     public static function configure(Table $table): Table
@@ -18,12 +21,13 @@ class ServicesTable
             ->columns([
 
 
+
                 ImageColumn::make('icon')
-                    ->label('Icone')
-                    ->getStateUsing(fn ($record) => asset('storage/' . $record->icon))
+                    ->label('Icône')
                     ->size(50)
-                    ->url(fn ($record) => asset('storage/' . $record->icon))
+                    ->url(fn ($record) => $record->icon)
                     ->openUrlInNewTab(),
+
 
 
 
@@ -33,9 +37,11 @@ class ServicesTable
 
 
 
+
                 TextColumn::make('description')
                     ->label('Description')
                     ->limit(50),
+
 
 
 
@@ -45,17 +51,23 @@ class ServicesTable
 
 
 
+
                 IconColumn::make('featured')
                     ->label('Mis en avant')
                     ->boolean(),
 
 
+
             ])
+
+
 
 
             ->actions([
                 EditAction::make(),
             ])
+
+
 
 
             ->bulkActions([

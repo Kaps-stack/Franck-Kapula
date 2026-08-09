@@ -49,14 +49,7 @@ const getImageUrl = (image) => {
         return null;
     }
 
-    if (
-        image.startsWith("http://") ||
-        image.startsWith("https://")
-    ) {
-        return image;
-    }
-
-    return `/storage/${image}`;
+    return image;
 };
 </script>
 
@@ -76,7 +69,7 @@ const getImageUrl = (image) => {
         <div class="mb-20 max-w-3xl">
 
 
-            <div class="mt-5"> 
+            <div class="mt-5">
 
                 <Heading
                     class="font-sans text-4xl text-white sm:text-5xl"

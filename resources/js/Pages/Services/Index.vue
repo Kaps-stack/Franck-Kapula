@@ -83,28 +83,8 @@ const isImageIcon = (service) => {
 */
 
 const iconUrl = (service) => {
-    if (!service.icon) {
-        return null;
-    }
-
-    if (
-        service.icon.startsWith("http://") ||
-        service.icon.startsWith("https://")
-    ) {
-        return service.icon;
-    }
-
-    if (service.icon.startsWith("/")) {
-        return service.icon;
-    }
-
-    if (service.icon.startsWith("storage/")) {
-        return `/${service.icon}`;
-    }
-
-    return `/storage/${service.icon}`;
+    return service?.icon || null;
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -551,7 +531,7 @@ const serviceIcon = (service) => {
             <!-- FOOTER -->
             <!-- ================================================= -->
 
-            
+
 
         </article>
 
