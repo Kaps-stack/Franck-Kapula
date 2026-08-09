@@ -70,7 +70,7 @@ class SkillForm
                         FileUpload::make('icon')
                             ->label('Icône')
                             ->image()
-                            ->disk('cloudinary')
+                            ->disk('public')
                             ->directory('skills'),
 
 

@@ -34,16 +34,12 @@ class InterestForm
                             ->label('Icône')
                             ->image()
                             ->imageEditor()
-                            ->required()
-                            ->saveUploadedFileUsing(function ($file) {
 
-                                return app(\App\Services\CloudinaryService::class)
-                                    ->upload(
-                                        $file,
-                                        'portfolio/interests'
-                                    );
+                            ->disk('public')
 
-                            }),
+                            ->directory('interests')
+
+                            ->required(),
 
 
 

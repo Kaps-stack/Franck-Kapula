@@ -81,10 +81,10 @@ const worldWidth = 9600; // Longueur totale du monde 3D
 
 // --- TROUS DANS LE SOL (Obstacles) ---
 const holes = ref([
-    { id: 1, x: 2300, width: 180 },
-    { id: 2, x: 4300, width: 200 },
-    { id: 3, x: 6300, width: 200 },
-    { id: 4, x: 8300, width: 200 },
+    { id: 1, x: 2300, width: 80 },
+    { id: 2, x: 4300, width: 80 },
+    { id: 3, x: 6300, width: 80 },
+    { id: 4, x: 8300, width: 80 },
 ]);
 
 // --- VÉHICULES / VAISSEAUX AUTONOMES (Décors en mouvement) ---
@@ -615,14 +615,7 @@ onUnmounted(() => {
 
             <!-- BOUTONS DE DIRECTION CLASSIQUES ET BOUTON DE SAUT -->
             <div class="flex gap-3 pointer-events-auto items-center">
-                <!-- BOUTON DE SAUT -->
-                <button
-                    @click="jump"
-                    @touchstart.prevent="jump"
-                    class="w-16 h-16 bg-cyan-500 border-2 border-cyan-300 text-slate-950 font-black rounded-2xl backdrop-blur-md flex items-center justify-center active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all cursor-pointer mr-2"
-                >
-                    <i class="fas fa-arrow-up text-2xl"></i>
-                </button>
+
 
                 <button
                     @mousedown="
@@ -652,7 +645,14 @@ onUnmounted(() => {
                         ></path>
                     </svg>
                 </button>
-
+                <!-- BOUTON DE SAUT -->
+                <button
+                    @click="jump"
+                    @touchstart.prevent="jump"
+                    class="w-16 h-16 bg-cyan-500 border-2 border-cyan-300 text-slate-950 font-black rounded-2xl backdrop-blur-md flex items-center justify-center active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all cursor-pointer mr-2"
+                >
+                    <i class="fas fa-arrow-up text-2xl"></i>
+                </button>
                 <button
                     @mousedown="
                         keys.right = true;

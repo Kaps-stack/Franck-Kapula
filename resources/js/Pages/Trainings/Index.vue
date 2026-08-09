@@ -113,34 +113,13 @@ const formatDateRange = (training) => {
 */
 
 const hasCertificate = (training) => {
+    return !!training.certificate_file
+}
 
-    return Boolean(training.certificate_file);
-
-};
-
-
-/*
-|--------------------------------------------------------------------------
-| CERTIFICATE URL
-|--------------------------------------------------------------------------
-*/
 
 const certificateUrl = (training) => {
-
-    if (!training.certificate_file) {
-        return null;
-    }
-
-    if (
-        training.certificate_file.startsWith("http://") ||
-        training.certificate_file.startsWith("https://")
-    ) {
-        return training.certificate_file;
-    }
-
-    return `/storage/${training.certificate_file}`;
-
-};
+    return training.certificate_file
+}
 
 
 /*
@@ -353,18 +332,7 @@ const imageUrl = (training) => {
                         <!-- IMAGE FORMATION -->
                         <!-- ================================================= -->
 
-                        <div
-                            v-if="training.image"
-                            class="h-48 w-full overflow-hidden bg-white/5"
-                        >
 
-                            <img
-                                :src="imageUrl(training)"
-                                :alt="training.title"
-                                class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                            />
-
-                        </div>
 
 
                         <!-- ================================================= -->
@@ -591,7 +559,7 @@ const imageUrl = (training) => {
 
     <section
         v-if="!trainings.length"
-        class="mx-auto mt-8 max-w-7xl rounded-3xl border border-dashed border-white/10 bg-[#101116] p-16 text-center"
+        class="mx-auto mt-8  rounded-3xl border border-dashed border-white/10 bg-[#101116] p-16 text-center"
     >
 
         <div

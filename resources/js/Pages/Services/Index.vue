@@ -284,7 +284,7 @@ const serviceIcon = (service) => {
             <div class="mt-8">
 
                 <div
-                    class="flex h-20 w-20 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 transition duration-300 group-hover:border-emerald-300/40 group-hover:bg-emerald-400/20"
+                    class="flex h-20 w-20 items-center justify-center rounded-2xl border  bg-emerald-400/10 transition duration-300 group-hover:border-emerald-300/40 group-hover:bg-emerald-400/20"
                 >
 
                     <!-- IMAGE -->

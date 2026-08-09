@@ -115,15 +115,8 @@ class ProjectForm
                             ->label('Image du projet')
                             ->placeholder('Importer une capture d’écran ou une image du projet')
                             ->image()
-                            ->saveUploadedFileUsing(function ($file) {
-
-                                return app(\App\Services\CloudinaryService::class)
-                                    ->upload(
-                                        $file,
-                                        'portfolio/projects'
-                                    );
-
-    }),
+                            ->disk('public')
+                            ->directory('projects'),
 
 
                     ]),

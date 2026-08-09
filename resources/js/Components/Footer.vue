@@ -1,9 +1,33 @@
 <script setup>
+import { computed } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
+import Small from "@/Components/Typography/Small.vue";
+
+const props = defineProps({
+    profile: {
+        type: Object,
+        default: null,
+    },
+    projects: {
+        type: Array,
+        default: () => [],
+    },
+    experiences: {
+        type: Array,
+        default: () => [],
+    },
+    education: {
+        type: Array,
+        default: () => [],
+    },
+});
 
 const page = usePage();
 
-const profile = page.props.profile;
+// Récupère en priorité les props transmises, sinon fallback sur Inertia global
+const profileData = computed(() => {
+    return props.profile || page.props.profile || null;
+});
 
 const currentYear = new Date().getFullYear();
 </script>
@@ -16,9 +40,7 @@ const currentYear = new Date().getFullYear();
             <!-- MAIN FOOTER -->
             <!-- ================================================= -->
 
-            <div
-                class="grid gap-12 py-16 lg:grid-cols-[1.5fr_1fr_1fr]"
-            >
+            <div class="grid gap-12 py-16 lg:grid-cols-[1.5fr_1fr_1fr]">
 
                 <!-- ================================================= -->
                 <!-- BRAND -->
@@ -26,14 +48,9 @@ const currentYear = new Date().getFullYear();
 
                 <div class="max-w-md">
 
-                    <Link
-                        href="/"
-                        class="inline-flex items-center"
-                    >
-                        <span
-                            class="text-2xl font-black tracking-tight text-white"
-                        >
-                            {{ profile?.full_name || "Franck Kapula" }}
+                    <Link href="/" class="inline-flex items-center">
+                        <span class="text-2xl font-black tracking-tight text-white">
+                            {{ profileData?.full_name || "Franck Kapula" }}
 
                             <span class="text-[#ff02ab]">
                                 .
@@ -43,27 +60,21 @@ const currentYear = new Date().getFullYear();
 
                     <!-- Title -->
                     <div class="mt-3">
-                        <Small
-                            class="font-sans text-indigo-400"
-                        >
-                            {{ profile?.title || "Software Developer" }}
+                        <Small class="font-sans text-indigo-400">
+                            {{ profileData?.title || "Software Developer" }}
                         </Small>
                     </div>
-
-                    <!-- Bio -->
 
                     <!-- ================================================= -->
                     <!-- SOCIALS -->
                     <!-- ================================================= -->
 
-                    <div
-                        class="mt-7 flex flex-wrap items-center gap-3"
-                    >
+                    <div class="mt-7 flex flex-wrap items-center gap-3">
 
                         <!-- GitHub -->
                         <a
-                            v-if="profile?.github_url"
-                            :href="profile.github_url"
+                            v-if="profileData?.github_url"
+                            :href="profileData.github_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="GitHub"
@@ -74,8 +85,8 @@ const currentYear = new Date().getFullYear();
 
                         <!-- LinkedIn -->
                         <a
-                            v-if="profile?.linkedin_url"
-                            :href="profile.linkedin_url"
+                            v-if="profileData?.linkedin_url"
+                            :href="profileData.linkedin_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="LinkedIn"
@@ -86,8 +97,8 @@ const currentYear = new Date().getFullYear();
 
                         <!-- X -->
                         <a
-                            v-if="profile?.X_url"
-                            :href="profile.X_url"
+                            v-if="profileData?.X_url || profileData?.twitter_url"
+                            :href="profileData?.X_url || profileData?.twitter_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="X"
@@ -98,8 +109,8 @@ const currentYear = new Date().getFullYear();
 
                         <!-- Facebook -->
                         <a
-                            v-if="profile?.facebook_url"
-                            :href="profile.facebook_url"
+                            v-if="profileData?.facebook_url"
+                            :href="profileData.facebook_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Facebook"
@@ -110,8 +121,8 @@ const currentYear = new Date().getFullYear();
 
                         <!-- Instagram -->
                         <a
-                            v-if="profile?.instagram_url"
-                            :href="profile.instagram_url"
+                            v-if="profileData?.instagram_url"
+                            :href="profileData.instagram_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Instagram"
@@ -122,8 +133,8 @@ const currentYear = new Date().getFullYear();
 
                         <!-- WhatsApp -->
                         <a
-                            v-if="profile?.whatsapp_url"
-                            :href="profile.whatsapp_url"
+                            v-if="profileData?.whatsapp_url"
+                            :href="profileData.whatsapp_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="WhatsApp"
@@ -134,8 +145,8 @@ const currentYear = new Date().getFullYear();
 
                         <!-- Email -->
                         <a
-                            v-if="profile?.email"
-                            :href="`mailto:${profile.email}`"
+                            v-if="profileData?.email"
+                            :href="`mailto:${profileData.email}`"
                             aria-label="Email"
                             class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#111216] text-slate-400 transition hover:border-white/20 hover:text-white"
                         >
@@ -150,9 +161,7 @@ const currentYear = new Date().getFullYear();
                 <!-- ================================================= -->
 
                 <div>
-                    <h3
-                        class="text-xs font-bold uppercase tracking-[0.2em] text-white"
-                    >
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-white">
                         Navigation
                     </h3>
 
@@ -201,9 +210,7 @@ const currentYear = new Date().getFullYear();
                 <!-- ================================================= -->
 
                 <div>
-                    <h3
-                        class="text-xs font-bold uppercase tracking-[0.2em] text-white"
-                    >
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-white">
                         Contact
                     </h3>
 
@@ -211,55 +218,47 @@ const currentYear = new Date().getFullYear();
 
                         <!-- Email -->
                         <a
-                            v-if="profile?.email"
-                            :href="`mailto:${profile.email}`"
+                            v-if="profileData?.email"
+                            :href="`mailto:${profileData.email}`"
                             class="flex items-center gap-3 text-sm text-slate-500 transition hover:text-white"
                         >
-                            <i
-                                class="fa-solid fa-envelope w-4 text-xs"
-                            ></i>
+                            <i class="fa-solid fa-envelope w-4 text-xs"></i>
 
                             <span class="break-all">
-                                {{ profile.email }}
+                                {{ profileData.email }}
                             </span>
                         </a>
 
                         <!-- Phone -->
                         <a
-                            v-if="profile?.phone"
-                            :href="`tel:${profile.phone}`"
+                            v-if="profileData?.phone"
+                            :href="`tel:${profileData.phone}`"
                             class="flex items-center gap-3 text-sm text-slate-500 transition hover:text-white"
                         >
-                            <i
-                                class="fa-solid fa-phone w-4 text-xs"
-                            ></i>
+                            <i class="fa-solid fa-phone w-4 text-xs"></i>
 
-                            {{ profile.phone }}
+                            {{ profileData.phone }}
                         </a>
 
                         <!-- Location -->
                         <div
-                            v-if="profile?.location"
+                            v-if="profileData?.location"
                             class="flex items-center gap-3 text-sm text-slate-500"
                         >
-                            <i
-                                class="fa-solid fa-location-dot w-4 text-xs"
-                            ></i>
+                            <i class="fa-solid fa-location-dot w-4 text-xs"></i>
 
-                            {{ profile.location }}
+                            {{ profileData.location }}
                         </div>
 
                         <!-- Website -->
                         <a
-                            v-if="profile?.website_url"
-                            :href="profile.website_url"
+                            v-if="profileData?.website_url"
+                            :href="profileData.website_url"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="flex items-center gap-3 text-sm text-slate-500 transition hover:text-white"
                         >
-                            <i
-                                class="fa-solid fa-globe w-4 text-xs"
-                            ></i>
+                            <i class="fa-solid fa-globe w-4 text-xs"></i>
 
                             Mon site
                         </a>
@@ -272,27 +271,21 @@ const currentYear = new Date().getFullYear();
             <!-- BOTTOM -->
             <!-- ================================================= -->
 
-            <div
-                class="flex flex-col gap-4 border-t border-white/10 py-7 sm:flex-row sm:items-center sm:justify-between"
-            >
+            <div class="flex flex-col gap-4 border-t border-white/10 py-7 sm:flex-row sm:items-center sm:justify-between">
 
                 <Small class="font-sans text-slate-600">
                     © {{ currentYear }}
 
-                    {{ profile?.full_name || "Franck Kapula" }}.
+                    {{ profileData?.full_name || "Franck Kapula" }}.
 
                     Tous droits réservés.
                 </Small>
 
-                <div
-                    class="flex items-center gap-2 text-slate-600"
-                >
-                    <span
-                        class="h-2 w-2 rounded-full bg-[#ff02ab]"
-                    ></span>
+                <div class="flex items-center gap-2 text-slate-600">
+                    <span class="h-2 w-2 rounded-full bg-[#ff02ab]"></span>
 
                     <Small class="font-sans text-slate-600">
-                        {{ profile?.title || "Software Developer" }}
+                        {{ profileData?.title || "Software Developer" }}
                     </Small>
                 </div>
 

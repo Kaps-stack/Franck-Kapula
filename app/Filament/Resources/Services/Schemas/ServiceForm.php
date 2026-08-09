@@ -76,12 +76,12 @@ class ServiceForm
 
 
 
-                        FileUpload::make('icon')
-                            ->label('Icône du service')
-                            ->placeholder('Importer une icône')
-                            ->image()
-                            ->disk('cloudinary')
-                            ->directory('services'),
+                       FileUpload::make('icon')
+                        ->label('Icône du service')
+                        ->placeholder('Importer une icône')
+                        ->image()
+                        ->disk('public')
+                        ->directory('services'),
 
 
 

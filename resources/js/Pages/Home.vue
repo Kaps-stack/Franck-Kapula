@@ -7,6 +7,7 @@ import Heading from "@/Components/Typography/Heading.vue";
 import Title from "@/Components/Typography/Title.vue";
 import Body from "@/Components/Typography/Body.vue";
 import Small from "@/Components/Typography/Small.vue";
+import PhotoCarousel from "@/Components/PhotoCarousel.vue";
 
 import Layout from "@/Layouts/PortfolioLayout.vue";
 
@@ -187,7 +188,7 @@ const formatMonthYear = (date) => {
                     <div class="mx-auto mt-6 max-w-3xl lg:mx-0">
                         <Body class="font-sans text-justify text-white/80">
                             {{
-                                profile?.bio.substring(0, 500) + "..." ||
+                                profile?.bio?.substring(0, 500) + "..." ||
                                 "Je transforme des idées en expériences numériques utiles, modernes et accessibles."
                             }}
                         </Body>
@@ -195,7 +196,7 @@ const formatMonthYear = (date) => {
 
                     <!-- Button -->
                     <div
-                        class="font-sans mt-10 flex justify-center lg:justify-start"
+                        class="font-sans mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
                     >
                         <Link
                             href="/game"
@@ -207,6 +208,20 @@ const formatMonthYear = (date) => {
 
                             <span>→</span>
                         </Link>
+
+                        <!-- TELECHARGER CV -->
+                        <a
+                            v-if="profile?.cv"
+                            :href="profile.cv"
+                            target="_blank"
+                            download
+                            class="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-7 py-4 text-white transition hover:bg-white/20"
+                        >
+                            <i class="fa-solid fa-download text-sm"></i>
+                            <Small class="text-white">
+                                Télécharger mon CV
+                            </Small>
+                        </a>
                     </div>
                 </div>
 
@@ -224,6 +239,13 @@ const formatMonthYear = (date) => {
                 </div>
             </div>
         </section>
+
+        <!-- ========================================================= -->
+        <!-- CAROUSSEL -->
+        <!-- ========================================================= -->
+
+
+        <PhotoCarousel />
 
         <!-- ========================================================= -->
         <!-- PROJECTS -->

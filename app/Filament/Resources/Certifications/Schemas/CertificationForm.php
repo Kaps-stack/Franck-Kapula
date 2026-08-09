@@ -9,7 +9,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
-use Cloudinary\Cloudinary;
 
 
 class CertificationForm
@@ -91,55 +90,18 @@ class CertificationForm
 
 
                         FileUpload::make('certificate_file')
-
                             ->label('Certificat')
 
-                            ->disk('local')
+                            ->disk('public')
 
-                            ->directory('temp')
+                            ->directory('certifications')
 
                             ->acceptedFileTypes([
                                 'application/pdf',
                                 'image/*',
                             ])
 
-                            ->required()
-
-
-                            ->afterStateUpdated(function ($state, callable $set) {
-
-
-                                if (!$state) {
-                                    return;
-                                }
-
-
-
-                                $cloudinary = new Cloudinary(
-                                    env('CLOUDINARY_URL')
-                                );
-
-
-
-                                $upload = $cloudinary
-                                    ->uploadApi()
-                                    ->upload(
-                                        $state->getRealPath(),
-                                        [
-                                            'folder' => 'portfolio/certifications',
-                                            'resource_type' => 'auto',
-                                        ]
-                                    );
-
-
-
-                                $set(
-                                    'certificate_file',
-                                    $upload['secure_url']
-                                );
-
-
-                            }),
+                            ->required(),
 
 
                     ])

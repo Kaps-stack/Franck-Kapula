@@ -67,36 +67,22 @@ class ProfileForm
                 Section::make('Photo et CV')
                     ->schema([
 
-
                         FileUpload::make('avatar')
                             ->label('Photo de profil')
                             ->image()
-                            ->saveUploadedFileUsing(function ($file) {
-
-                                return app(\App\Services\CloudinaryService::class)
-                                    ->upload(
-                                        $file,
-                                        'portfolio/profile/avatar'
-                                    );
-
-                            }),
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('profile/avatar'),
 
 
 
                         FileUpload::make('cv')
                             ->label('CV PDF')
+                            ->disk('public')
+                            ->directory('profile/cv')
                             ->acceptedFileTypes([
                                 'application/pdf',
-                            ])
-                            ->saveUploadedFileUsing(function ($file) {
-
-                                return app(\App\Services\CloudinaryService::class)
-                                    ->upload(
-                                        $file,
-                                        'portfolio/profile/cv'
-                                    );
-
-                            }),
+                            ]),
 
 
                     ])

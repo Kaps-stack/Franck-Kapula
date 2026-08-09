@@ -103,10 +103,8 @@ class TrainingForm
 
                         FileUpload::make('certificate_file')
                             ->label('Certificat')
-                            ->placeholder('Importer le certificat PDF ou image')
                             ->disk('public')
                             ->directory('trainings')
-                            ->visibility('public')
                             ->acceptedFileTypes([
                                 'application/pdf',
                                 'image/*',

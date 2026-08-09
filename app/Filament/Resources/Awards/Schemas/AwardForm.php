@@ -79,50 +79,12 @@ class AwardForm
                     ->schema([
 
 
-                        FileUpload::make('image')
-
-                            ->label('Image / Certificat')
-
-                            ->image()
-
-                            ->disk('local')
-
-                            ->directory('temp')
-
-                            ->required()
-
-                            ->afterStateUpdated(function ($state, callable $set) {
-
-
-                                if (!$state) {
-                                    return;
-                                }
-
-
-                                $cloudinary = new Cloudinary(
-                                    env('CLOUDINARY_URL')
-                                );
-
-
-                                $upload = $cloudinary
-                                    ->uploadApi()
-                                    ->upload(
-                                        $state->getRealPath(),
-                                        [
-                                            'folder' => 'portfolio/awards'
-                                        ]
-                                    );
-
-
-                                $set(
-                                    'image',
-                                    $upload['secure_url']
-                                );
-
-
-                            }),
-
-
+                    FileUpload::make('image')
+                        ->label('Image / Certificat')
+                        ->image()
+                        ->disk('public')
+                        ->directory('awards')
+                        ->required(),
 
                         TextInput::make('url')
                             ->label('Lien')
