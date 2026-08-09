@@ -115,6 +115,7 @@
         href="https://fonts.gstatic.com"
         crossorigin
     >
+    <link rel="icon" type="image/png" href="/logonav.png">
 
     <link
         href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&family=Spinnaker&display=swap"

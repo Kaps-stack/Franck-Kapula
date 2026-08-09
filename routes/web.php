@@ -12,6 +12,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\CertificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SitemapController;
 
@@ -126,8 +127,14 @@ Route::get('/awards/{award}', [AwardController::class, 'show'])
 Route::get('/trainings', [TrainingController::class, 'index'])
     ->name('trainings.index');
 
+
 Route::get('/trainings/{training}', [TrainingController::class, 'show'])
     ->name('trainings.show');
+
+
+
+Route::get('/certifications', [CertificationController::class, 'index'])
+    ->name('certifications.index');
 
 /*
 |--------------------------------------------------------------------------

@@ -412,7 +412,7 @@ import { Link } from "@inertiajs/vue3";
                             sm:py-4"
                     >
                         <span class="text-base sm:text-lg">
-                            🎮
+                            <i class="fa-solid fa-gamepad"></i>
                         </span>
 
                         <Small class="font-sans font-bold">

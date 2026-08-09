@@ -11,7 +11,6 @@ class ServiceController extends Controller
     public function index(): Response
     {
         $services = Service::query()
-            ->where('featured', true)
             ->orderBy('order')
             ->get();
 
