@@ -1,18 +1,18 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
-
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { Motion } from "motion-v"
+import PhotoCarousel from "@/Components/PhotoCarousel.vue";
+import Body from "@/Components/Typography/Body.vue";
+import Heading from "@/Components/Typography/Heading.vue";
+import Small from "@/Components/Typography/Small.vue";
+import Title from "@/Components/Typography/Title.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import lottie from "lottie-web";
-import Heading from "@/Components/Typography/Heading.vue";
-import Title from "@/Components/Typography/Title.vue";
-import Body from "@/Components/Typography/Body.vue";
-import Small from "@/Components/Typography/Small.vue";
-import PhotoCarousel from "@/Components/PhotoCarousel.vue";
 
 import Layout from "@/Layouts/PortfolioLayout.vue";
 
-import splashAnimation from "../assets/animations/splash.json";
 import codingManAnimation from "../assets/animations/coding_man.json";
+import splashAnimation from "../assets/animations/splash.json";
 
 defineOptions({
     layout: Layout,
@@ -173,15 +173,31 @@ const formatMonthYear = (date) => {
                     <div
                         class="mt-7 flex items-center justify-center lg:justify-start"
                     >
-                        <h1 class="bitcount text-4xl text-white">
-                            <span class="text-[#ff02ab]"> Un </span>
+                        <Motion
+                            :initial="{
+                                opacity: 0,
+                                x: 100,
+                            }"
+                            :whileInView="{
+                                opacity: 1,
+                                x: 0,
+                            }"
+                            :transition="{
+                                duration: 0.8,
+                                ease: 'easeOut',
+                            }"
+                        >
+                            <h1 class="bitcount text-4xl text-white">
+                                <span class="text-[#ff02ab]"> Un </span>
 
-                            {{ profile?.title || "Software Developer" }}
+                                {{ profile?.title || "Software Developer" }}
 
-                            <span class="text-[#ff02ab]">
-                                Qui Transforme vos idées en solutions concrètes
-                            </span>
-                        </h1>
+                                <span class="text-[#ff02ab]">
+                                    Qui Transforme vos idées en solutions
+                                    concrètes
+                                </span>
+                            </h1>
+                        </Motion>
                     </div>
 
                     <!-- Bio -->
@@ -243,7 +259,6 @@ const formatMonthYear = (date) => {
         <!-- ========================================================= -->
         <!-- CAROUSSEL -->
         <!-- ========================================================= -->
-
 
         <PhotoCarousel />
 
