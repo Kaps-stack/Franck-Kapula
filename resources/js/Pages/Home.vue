@@ -238,7 +238,8 @@ const formatMonthYear = (date) => {
                     </div>
 
                     <!-- Bio -->
-                    <div class="mx-auto mt-6 max-w-3xl lg:mx-<Motion
+                    <div class="mx-auto mt-6 max-w-3xl lg:mx-auto />
+<Motion
     class="relative mt-6"
     :initial="{
         opacity:0
