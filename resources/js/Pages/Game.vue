@@ -467,7 +467,6 @@ onUnmounted(() => {
 
                 <!-- COMPTEUR DE PIÈCES -->
 
-
                 <div
                     class="flex-1 max-w-md mx-2 md:mx-4 bg-slate-800 border border-slate-700 h-5 rounded-full overflow-hidden relative shadow-inner"
                 >
@@ -507,37 +506,34 @@ onUnmounted(() => {
         <main
             class="relative flex-1 w-full overflow-hidden bg-gradient-to-b from-[#090a16] via-[#10132b] to-[#05060a] perspective-scene"
         >
-
-            <div
-                    class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow"
-                >
-                    <i
-                        class="fa-solid fa-coins text-amber-400 animate-pulse"
-                    ></i>
-                    <span>{{ score }}</span>
-                </div>
             <!-- MESSAGE DE DESCRIPTION DANS L'ESPACE VIDE DU HAUT -->
             <div
                 v-if="gameState === 'PLAYING'"
-                class="absolute top-20 w-full flex justify-center z-30 pointer-events-none px-4 text-center"
+                class="absolute top-20 left-0 w-full flex flex-col items-center gap-3 z-30 pointer-events-none px-4"
             >
-             <div
-                    class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow"
-                >
-                    <i
-                        class="fa-solid fa-coins text-amber-400 animate-pulse"
-                    ></i>
-                    <span>{{ score }}</span>
-                </div>
+                <!-- Message indicatif -->
                 <div
-                    class="bg-slate-900/60 border border-cyan-500/30 px-6 py-2 rounded-2xl backdrop-blur-md shadow-lg animate-pulse"
+                    class="max-w-xl bg-slate-900/60 border border-cyan-500/30 px-5 py-2 rounded-2xl backdrop-blur-md shadow-lg animate-pulse text-center"
                 >
                     <p
-                        class="text-xs md:text-sm font-bold text-cyan-300 tracking-wide"
+                        class="text-xs md:text-sm font-bold text-cyan-300 tracking-wide leading-relaxed"
                     >
                         Sautez par-dessus les trous et récupérez les pièces, et
                         explorez mon portfolio
                     </p>
+                </div>
+
+                <!-- Score -->
+                <div
+                    class="self-start ml-2 flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-4 py-2 rounded-full text-amber-400 font-black text-sm shadow shrink-0"
+                >
+                    <i
+                        class="fa-solid fa-coins text-amber-400 animate-pulse"
+                    ></i>
+
+                    <span class="tabular-nums whitespace-nowrap">
+                        {{ score }}
+                    </span>
                 </div>
             </div>
 
