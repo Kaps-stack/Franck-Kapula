@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, nextTick } from "vue";
 import { Motion } from "motion-v";
 import { Head, Link } from "@inertiajs/vue3";
 
@@ -16,180 +16,111 @@ import lottie from "lottie-web";
 import codingManAnimation from "../assets/animations/coding_man.json";
 import splashAnimation from "../assets/animations/splash.json";
 
-
 defineOptions({
     layout: Layout,
 });
 
-
 // =========================================================
-// PROPS
+// PROPS (Une seule déclaration)
 // =========================================================
-
 const props = defineProps({
-
     profile: {
         type: Object,
         default: null,
     },
-
     projects: {
         type: Array,
         default: () => [],
     },
-
     experiences: {
         type: Array,
         default: () => [],
     },
-
     education: {
         type: Array,
         default: () => [],
     },
-
 });
-
 
 // =========================================================
 // BIO TYPEWRITER
 // =========================================================
-
 const typedBio = ref("");
-
+const isTyping = ref(false);
 let typingInterval = null;
 
-
 const startTyping = () => {
-
     const text =
         props.profile?.bio?.substring(0, 500) + "..." ||
         "Je transforme des idées en expériences numériques utiles, modernes et accessibles.";
 
-
+    typedBio.value = "";
     let index = 0;
+    isTyping.value = true;
 
+    if (typingInterval) clearInterval(typingInterval);
 
     typingInterval = setInterval(() => {
-
         typedBio.value += text[index];
-
         index++;
 
-
-        if(index >= text.length){
-
+        if (index >= text.length) {
             clearInterval(typingInterval);
-
+            isTyping.value = false;
         }
-
-
-    },35);
-
+    }, 35);
 };
 
-
+// Lancement automatique dès que profile.bio est disponible
+watch(
+    () => props.profile?.bio,
+    (newBio) => {
+        if (newBio) {
+            startTyping();
+        }
+    },
+    { immediate: true }
+);
 
 // =========================================================
-// LOTTIE
+// LOTTIE & LIFECYCLE
 // =========================================================
-
 const animationSplash = ref(null);
-
 const animationCodingMan = ref(null);
 
-
 let splash = null;
-
 let codingMan = null;
 
-
-
-onMounted(async()=>{
-
+onMounted(async () => {
     await nextTick();
 
-
-    startTyping();
-
-
-
-    if(animationSplash.value){
-
+    if (animationSplash.value) {
         splash = lottie.loadAnimation({
-
             container: animationSplash.value,
-
-            renderer:"svg",
-
-            loop:true,
-
-            autoplay:true,
-
-            animationData:splashAnimation,
-
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            animationData: splashAnimation,
         });
-
     }
 
-
-
-    if(animationCodingMan.value){
-
+    if (animationCodingMan.value) {
         codingMan = lottie.loadAnimation({
-
-            container:animationCodingMan.value,
-
-            renderer:"svg",
-
-            loop:true,
-
-            autoplay:true,
-
-            animationData:codingManAnimation,
-
+            container: animationCodingMan.value,
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            animationData: codingManAnimation,
         });
-
     }
-
-
 });
 
-
-
-
-// =========================================================
-// CLEAN
-// =========================================================
-
-onBeforeUnmount(()=>{
-
-
-    if(typingInterval){
-
-        clearInterval(typingInterval);
-
-    }
-
-
-    if(splash){
-
-        splash.destroy();
-
-    }
-
-
-    if(codingMan){
-
-        codingMan.destroy();
-
-    }
-
-
+// Clean-up unique pour éviter la duplication des hooks
+onBeforeUnmount(() => {
+    if (typingInterval) clearInterval(typingInterval);
+    if (splash) splash.destroy();
+    if (codingMan) codingMan.destroy();
 });
-
-
-
 </script>
 
 
@@ -373,82 +304,35 @@ Qui transforme vos idées en solutions concrètes
 
 <!-- BIO -->
 
+<!-- BIO -->
 <Motion
-
-class="mx-auto mt-6 max-w-3xl lg:mx-0"
-
-:initial="{
-
-opacity:0,
-
-x:-30
-
-}"
-
-:whileInView="{
-
-opacity:1,
-
-x:0
-
-}"
-
-:transition="{
-
-duration:0.8
-
-}"
-
+  class="mx-auto mt-6 max-w-3xl lg:mx-0"
+  :initial="{ opacity: 0 }"
+  :whileInView="{ opacity: 1 }"
+  :transition="{ duration: 0.5 }"
 >
+  <div class="flex items-start">
+    <Body class="font-sans text-justify text-white/80">
+      {{ typedBio }}
+    </Body>
 
-
-<div class="flex items-start">
-
-
-<Body
-class="font-sans text-justify text-white/80"
->
-
-{{typedBio}}
-
-</Body>
-
-
-
-<Motion
-
-class="ml-3 mt-1"
-
-:animate="{
-
-rotate:[-20,10,-20],
-
-y:[0,-4,0]
-
-}"
-
-:transition="{
-
-duration:0.8,
-
-repeat:Infinity
-
-}"
-
->
-
-
-<i class="fa-solid fa-pencil text-amber-200"></i>
-
-
+    <!-- Le crayon ne s'affiche QUE pendant la frappe (v-if) -->
+    <Motion
+      v-if="isTyping"
+      class="ml-3 mt-1 inline-block"
+      :animate="{
+        rotate: [-20, 10, -20],
+        y: [0, -4, 0]
+      }"
+      :transition="{
+        duration: 0.8,
+        repeat: Infinity
+      }"
+    >
+      <i class="fa-solid fa-pencil text-amber-200"></i>
+    </Motion>
+  </div>
 </Motion>
-
-
-</div>
-
-
-</Motion>
-
 
 
 
