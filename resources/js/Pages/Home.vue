@@ -1,653 +1,618 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
-import { Motion } from "motion-v"
-import PhotoCarousel from "@/Components/PhotoCarousel.vue";
-import Body from "@/Components/Typography/Body.vue";
-import Heading from "@/Components/Typography/Heading.vue";
-import Small from "@/Components/Typography/Small.vue";
-import Title from "@/Components/Typography/Title.vue";
-import { Head, Link } from "@inertiajs/vue3";
-import lottie from "lottie-web";
+import { Link } from "@inertiajs/vue3";
+import { Motion } from "motion-v";
 
 import Layout from "@/Layouts/PortfolioLayout.vue";
 
-import codingManAnimation from "../assets/animations/coding_man.json";
-import splashAnimation from "../assets/animations/splash.json";
+import Heading from "@/Components/Typography/Heading.vue";
+import Title from "@/Components/Typography/Title.vue";
+import Body from "@/Components/Typography/Body.vue";
+import Small from "@/Components/Typography/Small.vue";
 
 defineOptions({
     layout: Layout,
 });
 
-// =========================================================
-// PROPS
-// =========================================================
+
+/*
+|--------------------------------------------------------------------------
+| PROPS
+|--------------------------------------------------------------------------
+*/
 
 const props = defineProps({
-    profile: {
-        type: Object,
-        default: null,
-    },
-
-    projects: {
-        type: Array,
-        default: () => [],
-    },
-
-    experiences: {
-        type: Array,
-        default: () => [],
-    },
-
-    education: {
+    services: {
         type: Array,
         default: () => [],
     },
 });
 
-// =========================================================
-// LOTTIE
-// =========================================================
 
-const animationSplash = ref(null);
-const animationCodingMan = ref(null);
+/*
+|--------------------------------------------------------------------------
+| SERVICES
+|--------------------------------------------------------------------------
+*/
 
-let splash = null;
-let codingMan = null;
+const services = props.services;
 
-// =========================================================
-// INIT LOTTIE
-// =========================================================
 
-onMounted(async () => {
-    await nextTick();
+/*
+|--------------------------------------------------------------------------
+| SERVICES PRINCIPAUX
+|--------------------------------------------------------------------------
+*/
 
-    // =====================================================
-    // SPLASH — BACKGROUND
-    // =====================================================
+const featuredServices = services.filter(
+    (service) => service.featured === true || service.featured === 1
+);
 
-    if (animationSplash.value) {
-        splash = lottie.loadAnimation({
-            container: animationSplash.value,
-            renderer: "svg",
-            loop: true,
-            autoplay: true,
-            animationData: splashAnimation,
-            rendererSettings: {
-                preserveAspectRatio: "xMidYMid slice",
-            },
-        });
+
+/*
+|--------------------------------------------------------------------------
+| ICON
+|--------------------------------------------------------------------------
+*/
+
+const isImageIcon = (service) => {
+    if (!service.icon) {
+        return false;
     }
 
-    // =====================================================
-    // CODING MAN — HERO
-    // =====================================================
-
-    if (animationCodingMan.value) {
-        codingMan = lottie.loadAnimation({
-            container: animationCodingMan.value,
-            renderer: "svg",
-            loop: true,
-            autoplay: true,
-            animationData: codingManAnimation,
-            rendererSettings: {
-                preserveAspectRatio: "xMidYMid meet",
-            },
-        });
-    }
-});
-
-// =========================================================
-// DESTROY LOTTIE
-// =========================================================
-
-onBeforeUnmount(() => {
-    if (splash) {
-        splash.destroy();
-        splash = null;
-    }
-
-    if (codingMan) {
-        codingMan.destroy();
-        codingMan = null;
-    }
-});
-
-const formatMonthYear = (date) => {
-    if (!date) {
-        return "";
-    }
-
-    const parsedDate = new Date(date);
-
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "";
-    }
-
-    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-    const year = parsedDate.getFullYear();
-
-    return `${month}/${year}`;
+    return (
+        service.icon.startsWith("/") ||
+        service.icon.startsWith("http://") ||
+        service.icon.startsWith("https://") ||
+        service.icon.startsWith("storage/") ||
+        service.icon.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i)
+    );
 };
+
+
+/*
+|--------------------------------------------------------------------------
+| ICON URL
+|--------------------------------------------------------------------------
+*/
+
+const iconUrl = (service) => {
+    return service?.icon || null;
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| FONT AWESOME ICON
+|--------------------------------------------------------------------------
+*/
+
+const serviceIcon = (service) => {
+    if (!service.icon || isImageIcon(service)) {
+        return "fa-solid fa-code";
+    }
+
+    return service.icon;
+};
+
 </script>
 
+
 <template>
-    <Head :title="profile?.full_name || 'Franck Kapula'" />
 
-    <div class="bg-[#08090d] text-white">
-        <!-- ========================================================= -->
-        <!-- HERO -->
-        <!-- ========================================================= -->
+<!-- ========================================================= -->
+<!-- SECTION 1 — MES SERVICES -->
+<!-- ========================================================= -->
 
-        <section
-            class="relative flex min-h-screen items-center overflow-hidden bg-[#001d3d] px-6 pt-24"
+<section
+    class="mx-auto overflow-hidden border border-white/10 bg-[#450057]"
+>
+
+    <div
+        class="flex flex-col items-center gap-10 px-7 py-12 sm:px-10 lg:flex-row lg:px-14 lg:py-16"
+    >
+
+
+        <!-- ================================================= -->
+        <!-- TEXT -->
+        <!-- ================================================= -->
+
+        <Motion
+            :initial="{
+                opacity: 0,
+                x: -100
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                x: 0
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.8,
+                ease: 'easeOut'
+            }"
+
+            class="w-full max-w-2xl lg:w-1/2"
         >
-            <!-- ===================================================== -->
-            <!-- SPLASH BACKGROUND -->
-            <!-- ===================================================== -->
 
-            <!-- ===================================================== -->
-            <!-- HERO CONTENT -->
-            <!-- ===================================================== -->
+            <div class="mt-16">
+
+                <Heading
+                    class="font-sans text-4xl text-white sm:text-5xl"
+                >
+                    Mes services
+                </Heading>
+
+            </div>
+
+
+            <div class="mt-6">
+
+                <Body
+                    class="font-sans leading-8 text-white/60"
+                >
+                    Découvrez les services que je propose pour concevoir,
+                    développer et améliorer des solutions numériques
+                    adaptées à vos besoins.
+                </Body>
+
+            </div>
+
+        </Motion>
+
+
+
+        <!-- ================================================= -->
+        <!-- IMAGE -->
+        <!-- ================================================= -->
+
+        <Motion
+            :initial="{
+                opacity: 0,
+                x: 100
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                x: 0
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.8,
+                ease: 'easeOut'
+            }"
+
+            class="mt-4 flex w-full items-center justify-center lg:w-1/2"
+        >
 
             <div
-                class="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-12 lg:flex-row lg:gap-16"
+                class="h-64 w-64 sm:h-80 sm:w-80 lg:h-[24rem] lg:w-[24rem]"
             >
-                <!-- ================================================= -->
-                <!-- TEXT CONTENT -->
-                <!-- ================================================= -->
+
+                <img
+                    src="../../assets/icons/services.png"
+                    alt="Mes services"
+                    class="h-full w-full object-contain"
+                />
+
+            </div>
+
+        </Motion>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+<!-- SECTION 2 — SERVICES PRINCIPAUX -->
+<!-- ========================================================= -->
+
+<section
+    v-if="featuredServices.length"
+    class="bg-[#00574b] px-7 py-14 sm:px-10 lg:px-14"
+>
+
+
+    <div
+        class="mx-auto mb-16 max-w-7xl px-6"
+    >
+
+        <Small
+            class="font-sans uppercase tracking-[0.2em] text-emerald-300"
+        >
+            Mes domaines d'intervention
+        </Small>
+
+
+        <div class="mt-4">
+
+            <Title
+                class="font-sans text-white"
+            >
+                Services principaux
+            </Title>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <Body
+                class="max-w-2xl font-sans leading-7 text-slate-300"
+            >
+                Les services sur lesquels je me concentre
+                particulièrement dans mes projets professionnels.
+            </Body>
+
+        </div>
+
+    </div>
+    <!-- ================================================= -->
+    <!-- FEATURED GRID -->
+    <!-- ================================================= -->
+
+    <div
+        class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-3"
+    >
+
+        <Motion
+            v-for="(service, index) in featuredServices"
+            :key="service.id"
+
+            :initial="{
+                opacity: 0,
+                scale: 0.85
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                scale: 1
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.5,
+                delay: index * 0.1,
+                ease: 'easeOut'
+            }"
+
+            class="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101116] p-8 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-2 hover:border-emerald-300/40 hover:shadow-xl hover:shadow-black/30"
+        >
+
+
+            <!-- HEADER -->
+
+            <div
+                class="flex items-center justify-between"
+            >
 
                 <div
-                    class="relative z-20 mt-6 w-full max-w-3xl text-center lg:text-left"
+                    class="flex h-9 min-w-9 items-center justify-center rounded-full bg-emerald-400/10 px-3"
                 >
-                    <!-- Greeting -->
-                    <Small
-                        class="font-sans inline-block rounded-xl bg-[#6B21A8]/20 px-4 py-2 text-white"
-                    >
-                        <i class="fa-solid fa-hand-peace text-amber-100"></i>
 
-                        Hi, je suis
-                        {{ profile?.full_name || "Franck Kapula" }}
+                    <Small
+                        class="font-sans font-semibold text-emerald-300"
+                    >
+                        {{ String(index + 1).padStart(2, "0") }}
                     </Small>
 
-                    <!-- Title -->
-                    <div
-                        class="mt-7 flex items-center justify-center lg:justify-start"
-                    >
-                        <Motion
-                            :initial="{
-                                opacity: 0,
-                                x: 100,
-                            }"
-                            :whileInView="{
-                                opacity: 1,
-                                x: 0,
-                            }"
-                            :transition="{
-                                duration: 0.8,
-                                ease: 'easeOut',
-                            }"
-                        >
-                            <h1 class="bitcount text-4xl text-white">
-                                <span class="text-[#ff02ab]"> Un </span>
-
-                                {{ profile?.title || "Software Developer" }}
-
-                                <span class="text-[#ff02ab]">
-                                    Qui Transforme vos idées en solutions
-                                    concrètes
-                                </span>
-                            </h1>
-                        </Motion>
-                    </div>
-
-                    <!-- Bio -->
-                    <div class="mx-auto mt-6 max-w-3xl lg:mx-0">
-                        <Body class="font-sans text-justify text-white/80">
-                            {{
-                                profile?.bio?.substring(0, 500) + "..." ||
-                                "Je transforme des idées en expériences numériques utiles, modernes et accessibles."
-                            }}
-                        </Body>
-                    </div>
-
-                    <!-- Button -->
-                    <div
-                        class="font-sans mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
-                    >
-                        <Link
-                            href="/game"
-                            class="inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 text-slate-900 transition hover:bg-slate-200"
-                        >
-                            <Small class="text-slate-900">
-                                Explorer mon univers
-                            </Small>
-
-                            <span>→</span>
-                        </Link>
-
-                        <!-- TELECHARGER CV -->
-                        <a
-                            v-if="profile?.cv"
-                            :href="profile.cv"
-                            target="_blank"
-                            download
-                            class="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-7 py-4 text-white transition hover:bg-white/20"
-                        >
-                            <i class="fa-solid fa-download text-sm"></i>
-                            <Small class="text-white">
-                                Télécharger mon CV
-                            </Small>
-                        </a>
-                    </div>
                 </div>
 
-                <!-- ================================================= -->
-                <!-- CODING MAN -->
-                <!-- ================================================= -->
 
-                <div
-                    class="relative z-20 flex w-full shrink-0 items-center justify-center lg:w-[42%]"
+                <Small
+                    class="font-sans uppercase tracking-[0.15em] text-slate-600"
                 >
-                    <div
-                        ref="animationCodingMan"
-                        class="lottie-coding h-64 w-64 sm:h-80 sm:w-80 lg:h-[28rem] lg:w-[28rem] xl:h-[32rem] xl:w-[32rem]"
-                    ></div>
-                </div>
+                    Service
+                </Small>
+
             </div>
-        </section>
 
-        <!-- ========================================================= -->
-        <!-- CAROUSSEL -->
-        <!-- ========================================================= -->
 
-        <PhotoCarousel />
 
-        <!-- ========================================================= -->
-        <!-- PROJECTS -->
-        <!-- ========================================================= -->
+            <!-- ICON -->
 
-        <section id="projects" class="relative bg-[#00574b] px-6 py-32">
-            <div class="mx-auto max-w-7xl">
-                <!-- ===================================================== -->
-                <!-- HEADING -->
-                <!-- ===================================================== -->
+            <div class="mt-8">
 
                 <div
-                    class="mb-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+                    class="flex h-20 w-20 items-center justify-center rounded-2xl border bg-emerald-400/10 transition duration-300 group-hover:border-emerald-300/40 group-hover:bg-emerald-400/20"
                 >
-                    <div>
-                        <div class="mt-3">
-                            <Title class="text-white font-sans">
-                                01 — Mes projets
-                            </Title>
-                        </div>
-                    </div>
 
-                    <Body
-                        class="font-sans max-w-md text-slate-400 sm:text-right"
-                    >
-                        Quelques projets sur lesquels j'ai travaillé et les
-                        solutions que j'ai développées.
-                    </Body>
+                    <img
+                        v-if="isImageIcon(service)"
+                        :src="iconUrl(service)"
+                        :alt="service.title"
+                        class="h-11 w-11 object-contain"
+                    />
+
+
+                    <i
+                        v-else
+                        :class="serviceIcon(service)"
+                        class="text-3xl text-emerald-300"
+                    ></i>
+
                 </div>
 
-                <!-- ===================================================== -->
-                <!-- PROJECTS GRID -->
-                <!-- ===================================================== -->
-
-                <div
-                    v-if="projects?.length"
-                    class="grid grid-cols-1 gap-8 lg:grid-cols-2"
-                >
-                    <article
-                        v-for="(project, index) in projects"
-                        :key="project.id"
-                        class="group overflow-hidden rounded-3xl border border-white/10 bg-[#02302a] transition duration-300 hover:border-white/20"
-                    >
-                        <!-- ================================================= -->
-                        <!-- IMAGE -->
-                        <!-- ================================================= -->
-
-                        <div
-                            class="relative aspect-[16/10] overflow-hidden bg-[#202126]"
-                        >
-                            <img
-                                v-if="project.image"
-                                :src="project.image"
-                                :alt="project.title"
-                                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                            />
-
-                            <!-- Placeholder -->
-                            <div
-                                v-else
-                                class="flex h-full items-center justify-center bg-[#202126]"
-                            >
-                                <span
-                                    class="text-[7rem] font-black tracking-tighter text-white/5"
-                                >
-                                    {{ String(index + 1).padStart(2, "0") }}
-                                </span>
-                            </div>
-
-                            <!-- Number -->
-                            <div
-                                class="absolute left-5 top-5 rounded-lg bg-[#111216]/80 px-3 py-2 backdrop-blur-sm"
-                            >
-                                <Small
-                                    class="font-mono font-sans text-slate-400"
-                                >
-                                    {{ String(index + 1).padStart(2, "0") }}
-                                </Small>
-                            </div>
-                        </div>
-
-                        <!-- ================================================= -->
-                        <!-- CONTENT -->
-                        <!-- ================================================= -->
-
-                        <div class="p-6 sm:p-8">
-                            <!-- Title -->
-                            <Title size="md" class="text-white font-sans">
-                                {{ project.title }}
-                            </Title>
-
-                            <!-- Description -->
-                            <div class="mt-4">
-                                <Body class="text-slate-400 font-sans">
-                                    {{ project.description }}
-                                </Body>
-                            </div>
-
-                            <!-- Link -->
-                            <div class="mt-7">
-                                <Link
-                                    :href="`/projects/${project.id}`"
-                                    class="inline-flex items-center gap-3 border-b border-white/20 pb-1 text-white transition hover:border-white"
-                                >
-                                    <Small class="text-white font-sans">
-                                        Voir le projet
-                                    </Small>
-
-                                    <span> ↗ </span>
-                                </Link>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- ===================================================== -->
-                <!-- EMPTY STATE -->
-                <!-- ===================================================== -->
-
-                <div
-                    v-else
-                    class="rounded-3xl border border-dashed border-white/10 bg-[#191a1f] p-16 text-center"
-                >
-                    <Body class="text-slate-500 font-sans">
-                        Aucun projet disponible pour le moment.
-                    </Body>
-                </div>
-
-                <!-- ===================================================== -->
-                <!-- ALL PROJECTS BUTTON -->
-                <!-- ===================================================== -->
-
-                <div v-if="projects?.length" class="mt-14 flex justify-center">
-                    <Link
-                        href="/game"
-                        class="inline-flex items-center gap-3 rounded-full border border-white/15 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
-                    >
-                        <Small class="text-white font-sans">
-                            Voir tous les projets
-                        </Small>
-
-                        <span> → </span>
-                    </Link>
-                </div>
             </div>
-        </section>
 
-        <!-- ========================================================= -->
-        <!-- EXPERIENCE -->
-        <!-- ========================================================= -->
 
-        <section
-            id="experience"
-            class="relative border-y border-white/10 bg-[#0d0e13] px-6 py-32"
-        >
-            <div class="mx-auto max-w-7xl">
-                <!-- Heading -->
-                <div class="mb-20">
-                    <Title class="font-sans text-white">
-                        02 — Experience
-                    </Title>
 
-                    <div class="mt-4">
-                        <Heading class="font-sans text-indigo-400">
-                            Mon parcours professionnel
-                        </Heading>
-                    </div>
-                </div>
+            <!-- TITLE -->
 
-                <!-- Experiences -->
-                <div
-                    v-if="experiences?.length"
-                    class="relative ml-2 border-l border-white/10"
+            <div class="mt-7">
+
+                <Title
+                    size="md"
+                    class="font-sans text-xl text-white"
                 >
-                    <article
-                        v-for="experience in experiences"
-                        :key="experience.id"
-                        class="relative pb-16 pl-8 last:pb-0 sm:pl-12"
-                    >
-                        <!-- Timeline dot -->
-                        <span
-                            class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-indigo-400 ring-8 ring-[#0d0e13]"
-                        ></span>
+                    {{ service.title }}
+                </Title>
 
-                        <div class="grid gap-6 md:grid-cols-[180px_1fr]">
-                            <!-- Date -->
-                            <div>
-                                <Small class="text-slate-500 font-sans">
-                                    {{ formatMonthYear(experience.start_date) }}
-
-                                    —
-
-                                    <span v-if="experience.end_date">
-                                        {{
-                                            formatMonthYear(experience.end_date)
-                                        }}
-                                    </span>
-
-                                    <span v-else class="text-indigo-400">
-                                        Présent
-                                    </span>
-                                </Small>
-                            </div>
-
-                            <!-- Experience -->
-                            <div>
-                                <Title class="font-sans text-white" size="md">
-                                    {{ experience.position }}
-                                </Title>
-
-                                <div class="mt-2">
-                                    <Small class="text-indigo-400 font-sans">
-                                        {{ experience.company }}
-                                    </Small>
-                                </div>
-
-                                <div class="mt-5 max-w-2xl">
-                                    <Body class="text-slate-400 font-sans">
-                                        {{ experience.description }}
-                                    </Body>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Empty state -->
-                <div v-else>
-                    <Body class="text-slate-500 *:font-sans">
-                        Aucune expérience disponible pour le moment.
-                    </Body>
-                </div>
-
-                <!-- ===================================================== -->
-                <!-- SEE ALL -->
-                <!-- ===================================================== -->
-
-                <div
-                    v-if="experiences?.length"
-                    class="mt-14 flex justify-center"
-                >
-                    <Link
-                        href="/game"
-                        class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
-                    >
-                        <Small class="text-white"> Voir au complet </Small>
-
-                        <span> → </span>
-                    </Link>
-                </div>
             </div>
-        </section>
 
-        <!-- ========================================================= -->
-        <!-- EDUCATION -->
-        <!-- ========================================================= -->
 
-        <section id="education" class="bg-[#00574b] px-6 py-32">
-            <div class="mx-auto max-w-7xl">
-                <!-- ===================================================== -->
-                <!-- HEADING -->
-                <!-- ===================================================== -->
 
-                <div class="mb-16">
-                    <Title class="font-sans text-white"> 03 — Education </Title>
+            <!-- DESCRIPTION -->
 
-                    <div class="mt-4">
-                        <Heading class="font-sans text-indigo-400">
-                            Formation
-                        </Heading>
-                    </div>
-                </div>
+            <div
+                v-if="service.description"
+                class="mt-4"
+            >
 
-                <!-- ===================================================== -->
-                <!-- EDUCATION -->
-                <!-- ===================================================== -->
-
-                <div
-                    v-if="education?.length"
-                    class="divide-y divide-white/10 border-y border-white/10"
+                <Body
+                    class="font-sans leading-7 text-slate-400"
                 >
-                    <article
-                        v-for="(item, index) in education"
-                        :key="item.id"
-                        class="grid gap-6 py-10 md:grid-cols-[100px_1fr_2fr] md:items-center"
-                    >
-                        <!-- Number -->
-                        <Small class="font-mono text-slate-600">
-                            {{ String(index + 1).padStart(2, "0") }}
-                        </Small>
+                    {{ service.description }}
+                </Body>
 
-                        <!-- Formation -->
-                        <div>
-                            <Title size="md">
-                                {{ item.degree }}
-                            </Title>
-
-                            <!-- Dates -->
-                            <div class="mt-2">
-                                <Small class="text-indigo-400">
-                                    {{ formatMonthYear(item.start_date) }}
-
-                                    —
-
-                                    <span v-if="item.end_date">
-                                        {{ formatMonthYear(item.end_date) }}
-                                    </span>
-
-                                    <span v-else> Présent </span>
-                                </Small>
-                            </div>
-
-                            <!-- Institution -->
-                            <div class="mt-2">
-                                <Small class="font-sans text-white">
-                                    {{ item.institution }}
-                                </Small>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <Body class="font-sans text-slate-400">
-                            {{ item.description }}
-                        </Body>
-                    </article>
-                </div>
-
-                <!-- ===================================================== -->
-                <!-- EMPTY STATE -->
-                <!-- ===================================================== -->
-
-                <div v-else>
-                    <Body class="text-slate-500">
-                        Aucune formation disponible pour le moment.
-                    </Body>
-                </div>
-
-                <!-- ===================================================== -->
-                <!-- SEE ALL -->
-                <!-- ===================================================== -->
-
-                <div v-if="education?.length" class="mt-14 flex justify-center">
-                    <Link
-                        href="/game"
-                        class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#191a1f] px-7 py-4 text-white transition hover:bg-[#24252b]"
-                    >
-                        <Small class="text-white"> Voir au complet </Small>
-
-                        <span> → </span>
-                    </Link>
-                </div>
             </div>
-        </section>
+
+
+
+            <!-- FOOTER -->
+
+            <div
+                class="mt-8 flex items-center justify-between border-t border-white/10 pt-5"
+            >
+
+                <Small
+                    class="font-sans text-slate-600"
+                >
+                    Domaine d'expertise
+                </Small>
+
+
+                <span
+                    class="h-2 w-2 rounded-full bg-emerald-400 transition duration-300 group-hover:scale-150"
+                ></span>
+
+            </div>
+
+
+        </Motion>
+
+
     </div>
+
+
+</section>
+
+
+
+
+<!-- ========================================================= -->
+<!-- SECTION 3 — TOUS LES SERVICES -->
+<!-- ========================================================= -->
+
+
+<section
+    v-if="services.length"
+    class="bg-[#00574b] px-7 py-14 sm:px-10 lg:px-14"
+>
+
+
+    <div
+        class="mx-auto mb-16 max-w-7xl px-6"
+    >
+
+        <Small
+            class="font-sans uppercase tracking-[0.2em] text-indigo-300"
+        >
+            Mon savoir-faire
+        </Small>
+
+
+        <div class="mt-4">
+
+            <Title
+                class="font-sans text-white"
+            >
+                Tous mes services
+            </Title>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <Body
+                class="max-w-2xl font-sans leading-7 text-slate-300"
+            >
+                Retrouvez l'ensemble des services que je peux
+                proposer dans le cadre de projets numériques.
+            </Body>
+
+        </div>
+
+    </div>
+
+
+
+    <div
+        class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:grid-cols-3"
+    >
+
+        <Motion
+            v-for="(service, index) in services"
+            :key="service.id"
+
+            :initial="{
+                opacity: 0,
+                scale: 0.85
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                scale: 1
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.45,
+                delay: index * 0.08,
+                ease: 'easeOut'
+            }"
+
+            class="group relative rounded-2xl border border-white/10 bg-[#101116] p-6 transition duration-300 hover:-translate-y-6 hover:border-indigo-400/40 hover:bg-[#14151c]"
+        >
+
+
+            <!-- NUMBER -->
+
+            <div
+                class="flex items-center justify-between"
+            >
+
+                <Small
+                    class="font-sans font-semibold text-indigo-400"
+                >
+                    {{ String(index + 1).padStart(2, "0") }}
+                </Small>
+
+
+                <Small
+                    v-if="service.featured"
+                    class="rounded-full bg-emerald-400/10 px-3 py-1 font-sans text-emerald-400"
+                >
+                    Principal
+                </Small>
+
+            </div>
+
+
+
+            <!-- ICON -->
+
+            <div class="mt-6">
+
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 transition duration-300 group-hover:bg-indigo-400/10"
+                >
+
+                    <img
+                        v-if="isImageIcon(service)"
+                        :src="iconUrl(service)"
+                        :alt="service.title"
+                        class="h-8 w-8 object-contain"
+                    />
+
+
+                    <i
+                        v-else
+                        :class="serviceIcon(service)"
+                        class="text-xl text-indigo-400"
+                    ></i>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TITLE -->
+
+            <div class="mt-6">
+
+                <Title
+                    size="md"
+                    class="font-sans text-white"
+                >
+                    {{ service.title }}
+                </Title>
+
+            </div>
+
+
+
+            <!-- DESCRIPTION -->
+
+            <div
+                v-if="service.description"
+                class="mt-3"
+            >
+
+                <Body
+                    class="font-sans leading-7 text-slate-400"
+                >
+                    {{ service.description }}
+                </Body>
+
+            </div>
+
+
+        </Motion>
+
+
+    </div>
+
+
+</section>
+
+
+
+
+
+<!-- ========================================================= -->
+<!-- BACK -->
+<!-- ========================================================= -->
+
+
+<div
+    class="mx-auto mt-16 max-w-7xl px-6"
+>
+
+    <Link
+        href="/"
+        class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 font-sans text-sm text-white transition hover:bg-white hover:text-slate-900"
+    >
+
+        <span>
+            ←
+        </span>
+
+        Retour à l'accueil
+
+    </Link>
+
+</div>
+
+
 </template>
-
-<style scoped>
-/* =========================================================
-   SPLASH
-   ========================================================= */
-
-.lottie-splash {
-    width: 100%;
-    height: 100%;
-}
-
-.lottie-splash :deep(svg) {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    overflow: visible !important;
-}
-
-/* =========================================================
-   CODING MAN
-   ========================================================= */
-
-.lottie-coding {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.lottie-coding :deep(svg) {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    overflow: visible !important;
-}
-</style>
