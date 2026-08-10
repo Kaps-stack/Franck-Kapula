@@ -466,14 +466,7 @@ onUnmounted(() => {
                 </div>
 
                 <!-- COMPTEUR DE PIÈCES -->
-                <div
-                    class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow"
-                >
-                    <i
-                        class="fa-solid fa-coins text-amber-400 animate-pulse"
-                    ></i>
-                    <span>{{ score }}</span>
-                </div>
+
 
                 <div
                     class="flex-1 max-w-md mx-2 md:mx-4 bg-slate-800 border border-slate-700 h-5 rounded-full overflow-hidden relative shadow-inner"
@@ -514,11 +507,28 @@ onUnmounted(() => {
         <main
             class="relative flex-1 w-full overflow-hidden bg-gradient-to-b from-[#090a16] via-[#10132b] to-[#05060a] perspective-scene"
         >
+
+            <div
+                    class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow"
+                >
+                    <i
+                        class="fa-solid fa-coins text-amber-400 animate-pulse"
+                    ></i>
+                    <span>{{ score }}</span>
+                </div>
             <!-- MESSAGE DE DESCRIPTION DANS L'ESPACE VIDE DU HAUT -->
             <div
                 v-if="gameState === 'PLAYING'"
                 class="absolute top-20 w-full flex justify-center z-30 pointer-events-none px-4 text-center"
             >
+             <div
+                    class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow"
+                >
+                    <i
+                        class="fa-solid fa-coins text-amber-400 animate-pulse"
+                    ></i>
+                    <span>{{ score }}</span>
+                </div>
                 <div
                     class="bg-slate-900/60 border border-cyan-500/30 px-6 py-2 rounded-2xl backdrop-blur-md shadow-lg animate-pulse"
                 >
