@@ -163,7 +163,19 @@ const formatMonthYear = (date) => {
                     <Small
                         class="font-sans inline-block rounded-xl bg-[#6B21A8]/20 px-4 py-2 text-white"
                     >
-                        <i class="fa-solid fa-hand-peace text-amber-100"></i>
+<Motion
+    :animate="{
+        scale: [1, 1.2, 1.2, 1],
+        rotate: [0, -12, 12, -8, 8, 0]
+    }"
+    :transition="{
+        duration: 2,
+        repeat: Infinity,
+        ease: 'easeInOut'
+    }"
+>
+    <i class="fa-solid fa-hand-peace text-amber-100"></i>
+</Motion>
 
                         Hi, je suis
                         {{ profile?.full_name || "Franck Kapula" }}
