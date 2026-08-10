@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
-
+// Remonte de Pages/ (..) vers js/ puis rentre dans assets/audio/
+import bgMusicUrl from '@/assets/audio/son.mp3';
 // --- DONNÉES DU PORTFOLIO (Les stations dans le monde 3D) ---
 const portfolioStations = [
     {
@@ -87,14 +88,109 @@ const holes = ref([
     { id: 4, x: 8300, width: 80 },
 ]);
 
-// --- VÉHICULES / VAISSEAUX AUTONOMES (Décors en mouvement) ---
-const vehicles = ref([
-    { id: 1, type: 'ship', x: 500, y: 220, zIndex: 10, speed: 4, dir: 1, color: 'text-cyan-400', icon: 'fa-solid fa-shuttle-space' },
-    { id: 2, type: 'ship', x: 3500, y: 280, zIndex: 10, speed: 6, dir: -1, color: 'text-pink-500', icon: 'fa-solid fa-space-shuttle' },
-    { id: 3, type: 'ship', x: 7000, y: 240, zIndex: 10, speed: 5, dir: 1, color: 'text-purple-400', icon: 'fa-solid fa-jet-fighter-dark' },
-    { id: 4, type: 'train', x: 1000, y: 150, zIndex: 15, speed: 10, dir: 1 },
-    { id: 5, type: 'train', x: 6000, y: 150, zIndex: 15, speed: 12, dir: -1 }
-]);
+// --- PIÈCES (COINS) DANS LE MONDE ---
+const coins = ref([]);
+const score = ref(0);
+
+const generateCoins = () => {
+    const newCoins = [];
+    let coinId = 1;
+    // Génération de pièces régulièrement réparties le long du monde
+    for (let x = 400; x < worldWidth - 400; x += 250) {
+        // Vérifier qu'on n'est pas au-dessus d'un trou
+        const isOverHole = holes.value.some(h => x >= h.x - 40 && x <= h.x + h.width + 40);
+        if (!isOverHole) {
+            // Hauteur aléatoire : au sol (0) ou en hauteur (saut nécessaire, ex: -60 à -110)
+            const isHigh = Math.random() > 0.4;
+            const y = isHigh ? -(50 + Math.floor(Math.random() * 60)) : 0;
+            newCoins.push({
+                id: coinId++,
+                x: x,
+                y: y,
+                collected: false
+            });
+        }
+    }
+    coins.value = newCoins;
+};
+
+// --- AUDIO & PARAMÈTRES ---
+const isSettingsOpen = ref(false);
+const audioSettings = reactive({
+    bgMusicMuted: false,
+    bgMusicVolume: 0.3,
+    sfxMuted: false,
+    sfxVolume: 0.7,
+});
+
+let bgAudio = null;
+let audioCtx = null;
+
+const initAudio = () => {
+    if (!bgAudio) {
+        // On passe l'URL générée par l'import au lieu du chemin brut
+        bgAudio = new Audio(bgMusicUrl);
+        bgAudio.loop = true;
+        bgAudio.volume = audioSettings.bgMusicVolume;
+    }
+};
+
+const playBgMusic = () => {
+    if (bgAudio && !audioSettings.bgMusicMuted) {
+        bgAudio.play().catch(() => {
+            // Auto-play bloqué jusqu'à interaction utilisateur
+        });
+    }
+};
+
+const pauseBgMusic = () => {
+    if (bgAudio) {
+        bgAudio.pause();
+    }
+};
+
+const updateBgVolume = () => {
+    if (bgAudio) {
+        bgAudio.volume = audioSettings.bgMusicVolume;
+        if (audioSettings.bgMusicMuted) {
+            bgAudio.pause();
+        } else if (gameState.value === 'PLAYING') {
+            bgAudio.play().catch(() => {});
+        }
+    }
+};
+
+// Son par défaut généré pour la collecte de pièce (Web Audio API)
+const playCoinSound = () => {
+    if (audioSettings.sfxMuted || audioSettings.sfxVolume <= 0) return;
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+
+        // Fréquence aiguë montante typique d'un son de pièce
+        const now = audioCtx.currentTime;
+        osc.frequency.setValueAtTime(987.77, now); // B5
+        osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+
+        gain.gain.setValueAtTime(audioSettings.sfxVolume * 0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+    } catch (e) {
+        console.error("Erreur lecture audio SFX", e);
+    }
+};
 
 // --- ÉTAT DU JEU ---
 const gameState = ref("IDLE"); // IDLE, PLAYING, VICTORY
@@ -220,6 +316,12 @@ const startGame = () => {
     player.isFallen = false;
     keys.left = false;
     keys.right = false;
+    score.value = 0;
+
+    generateCoins();
+    initAudio();
+    playBgMusic();
+
     stations.value = portfolioStations.map((s) => ({
         ...s,
         isNear: false,
@@ -258,6 +360,7 @@ const loop = () => {
     if (player.x > worldWidth) {
         player.x = worldWidth;
         gameState.value = "VICTORY";
+        pauseBgMusic();
         return;
     }
 
@@ -284,13 +387,17 @@ const loop = () => {
         }
     }
 
-    // Déplacement continu des véhicules et trains
-    vehicles.value.forEach((v) => {
-        v.x += v.speed * v.dir;
-        if (v.dir === 1 && v.x > worldWidth + 800) {
-            v.x = -800;
-        } else if (v.dir === -1 && v.x < -800) {
-            v.x = worldWidth + 800;
+    // Collision avec les pièces
+    coins.value.forEach((coin) => {
+        if (!coin.collected) {
+            const distX = Math.abs(player.x - coin.x);
+            const distY = Math.abs(player.y - coin.y);
+            // Tolérance de proximité pour attraper la pièce
+            if (distX < 35 && distY < 40) {
+                coin.collected = true;
+                score.value += 1;
+                playCoinSound();
+            }
         }
     });
 
@@ -323,6 +430,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     cancelAnimationFrame(animationFrameId);
+    pauseBgMusic();
     window.removeEventListener("keydown", handleKeyDown);
     window.removeEventListener("keyup", handleKeyUp);
     window.removeEventListener("mousemove", handleJoystickMove);
@@ -340,15 +448,21 @@ onUnmounted(() => {
         <header
             class="absolute top-0 w-full p-4 flex justify-between items-center z-50 bg-slate-900/80 backdrop-blur-md border-b border-cyan-500/20 shadow-lg"
         >
-            <div class="w-full flex items-center gap-4">
+            <div class="w-full flex items-center gap-3 md:gap-4 justify-between">
                 <div
-                    class="font-black text-cyan-400 text-lg tracking-wider hidden md:block"
+                    class="font-black text-cyan-400 text-lg tracking-wider hidden md:block whitespace-nowrap"
                 >
                     CYBER_PORTFOLIO 3D
                 </div>
 
+                <!-- COMPTEUR DE PIÈCES -->
+                <div class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow">
+                    <i class="fa-solid fa-coins text-amber-400 animate-pulse"></i>
+                    <span>{{ score }}</span>
+                </div>
+
                 <div
-                    class="flex-1 max-w-md mx-4 bg-slate-800 border border-slate-700 h-5 rounded-full overflow-hidden relative shadow-inner"
+                    class="flex-1 max-w-md mx-2 md:mx-4 bg-slate-800 border border-slate-700 h-5 rounded-full overflow-hidden relative shadow-inner"
                 >
                     <div
                         class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 transition-all duration-100"
@@ -361,13 +475,24 @@ onUnmounted(() => {
                     </span>
                 </div>
 
-                <!-- Bouton retour Home vers la route Laravel '/' -->
-                <a
-                    href="/"
-                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-400 rounded-xl font-bold text-xs shadow transition-all flex items-center gap-2 pointer-events-auto no-underline"
-                >
-                    <span>ACCUEIL</span>
-                </a>
+                <div class="flex items-center gap-2 pointer-events-auto">
+                    <!-- BOUTON SETTINGS (Icône i / engrenage) -->
+                    <button
+                        @click="isSettingsOpen = true"
+                        class="w-9 h-9 bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-400 rounded-xl font-bold text-sm flex items-center justify-center shadow transition-all cursor-pointer"
+                        title="Paramètres audio"
+                    >
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+
+                    <!-- Bouton retour Home vers la route Laravel '/' -->
+                    <a
+                        href="/"
+                        class="px-3 md:px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-400 rounded-xl font-bold text-xs shadow transition-all flex items-center gap-2 no-underline"
+                    >
+                        <span>ACCUEIL</span>
+                    </a>
+                </div>
             </div>
         </header>
 
@@ -378,15 +503,15 @@ onUnmounted(() => {
             <!-- MESSAGE DE DESCRIPTION DANS L'ESPACE VIDE DU HAUT -->
             <div
                 v-if="gameState === 'PLAYING'"
-                class="absolute top-20 w-full flex justify-center z-30 pointer-events-none"
+                class="absolute top-20 w-full flex justify-center z-30 pointer-events-none px-4 text-center"
             >
                 <div
-                    class="bg-slate-900/60 border border-cyan-500/30 px-6 py-2 rounded-2xl backdrop-blur-md text-center shadow-lg animate-pulse"
+                    class="bg-slate-900/60 border border-cyan-500/30 px-6 py-2 rounded-2xl backdrop-blur-md shadow-lg animate-pulse"
                 >
                     <p
                         class="text-xs md:text-sm font-bold text-cyan-300 tracking-wide"
                     >
-                         Sautez par-dessus les trous et approchez-vous des bornes !
+                        Sautez par-dessus les trous et récupérez les pièces, et explorez mon portfolio
                     </p>
                 </div>
             </div>
@@ -406,42 +531,6 @@ onUnmounted(() => {
                 class="absolute inset-0 world-container transition-transform duration-75"
                 :style="{ transform: `translateX(${-cameraX}px)` }"
             >
-                <!-- RAILS EN ARRIÈRE-PLAN DES TRAINS -->
-                <div class="absolute bottom-60 left-0 w-[11000px] h-2 bg-cyan-500/20 border-y border-cyan-400/40 pointer-events-none"></div>
-
-                <!-- VÉHICULES ET VAISSEAUX AUTONOMES -->
-                <div
-                    v-for="v in vehicles"
-                    :key="'v-' + v.id"
-                    class="absolute pointer-events-none transition-transform duration-75 flex items-center"
-                    :style="{
-                        left: v.x + 'px',
-                        bottom: v.y + 'px',
-                        transform: `scaleX(${v.dir === -1 ? -1 : 1})`,
-                        zIndex: v.zIndex
-                    }"
-                >
-                    <!-- VAISSEAU -->
-                    <template v-if="v.type === 'ship'">
-                        <div class="flex items-center gap-2 bg-slate-900/80 border border-cyan-400/50 px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.4)] backdrop-blur-sm">
-                            <i :class="[v.icon, v.color]" class="text-xl animate-pulse"></i>
-                            <div class="w-6 h-1 bg-cyan-400 shadow-[0_0_8px_#22d3ee] rounded-full"></div>
-                        </div>
-                    </template>
-
-                    <!-- TRAIN CYBER -->
-                    <template v-else-if="v.type === 'train'">
-                        <div class="flex items-center gap-1 bg-slate-900 border-y-2 border-cyan-400 px-4 py-2 rounded-lg shadow-[0_0_20px_rgba(34,211,238,0.6)]">
-                            <div class="w-24 h-4 bg-gradient-to-r from-cyan-500 via-indigo-500 to-pink-500 rounded flex items-center justify-around px-1">
-                                <div class="w-2 h-2 bg-white rounded-full animate-ping"></div>
-                                <div class="w-2 h-2 bg-cyan-300 rounded-full"></div>
-                                <div class="w-2 h-2 bg-cyan-300 rounded-full"></div>
-                            </div>
-                            <div class="w-4 h-5 bg-cyan-400 rounded-r shadow-[0_0_10px_#22d3ee]"></div>
-                        </div>
-                    </template>
-                </div>
-
                 <!-- SOL 3D INCLINÉ -->
                 <div class="floor-3d">
                     <div class="floor-grid"></div>
@@ -456,6 +545,22 @@ onUnmounted(() => {
                         <div class="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-950/40 via-slate-950 to-slate-950"></div>
                         <div class="absolute -top-5 -left-3 text-yellow-400 text-xs font-black animate-bounce">⚠️</div>
                         <div class="absolute -top-5 -right-3 text-yellow-400 text-xs font-black animate-bounce">⚠️</div>
+                    </div>
+                </div>
+
+                <!-- PIÈCES À RÉCUPÉRER (COINS) -->
+                <div
+                    v-for="coin in coins"
+                    :key="'coin-' + coin.id"
+                    v-show="!coin.collected"
+                    class="absolute bottom-36 flex flex-col items-center pointer-events-none transition-transform"
+                    :style="{
+                        left: coin.x + 'px',
+                        transform: `translateX(-50%) translateY(${coin.y}px)`
+                    }"
+                >
+                    <div class="w-7 h-7 bg-amber-400 border-2 border-amber-200 rounded-full flex items-center justify-center text-slate-950 font-black text-xs shadow-[0_0_15px_#f59e0b] animate-bounce">
+                        <i class="fa-solid fa-coins"></i>
                     </div>
                 </div>
 
@@ -567,7 +672,7 @@ onUnmounted(() => {
 
         <!-- CONTRÔLES : JOYSTICK VIRTUEL, FLÈCHES & BOUTON SAUT -->
         <div
-            class="absolute bottom-6 left-0 w-full flex justify-between items-center px-8 z-40 pointer-events-none"
+            class="absolute bottom-6 left-0 w-full flex justify-between items-center px-4 md:px-8 z-40 pointer-events-none"
         >
             <!-- JOYSTICK VIRTUEL -->
             <div
@@ -613,10 +718,9 @@ onUnmounted(() => {
                 <span>pour sauter</span>
             </div>
 
-            <!-- BOUTONS DE DIRECTION CLASSIQUES ET BOUTON DE SAUT -->
+            <!-- BOUTONS DE DIRECTION CLASSIQUES (MASQUÉS SUR MOBILE) ET BOUTON DE SAUT -->
             <div class="flex gap-3 pointer-events-auto items-center">
-
-
+                <!-- Flèche Gauche : visible seulement à partir de l'écran medium (md:) -->
                 <button
                     @mousedown="
                         keys.left = true;
@@ -629,7 +733,7 @@ onUnmounted(() => {
                         player.direction = 'left';
                     "
                     @touchend.prevent="keys.left = false"
-                    class="w-16 h-16 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl backdrop-blur-md flex items-center justify-center active:bg-cyan-500/40 text-cyan-400 shadow-lg active:scale-95 transition-all cursor-pointer"
+                    class="hidden md:flex w-16 h-16 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl backdrop-blur-md items-center justify-center active:bg-cyan-500/40 text-cyan-400 shadow-lg active:scale-95 transition-all cursor-pointer"
                 >
                     <svg
                         class="w-8 h-8"
@@ -645,14 +749,17 @@ onUnmounted(() => {
                         ></path>
                     </svg>
                 </button>
-                <!-- BOUTON DE SAUT -->
+
+                <!-- BOUTON DE SAUT (Toujours visible) -->
                 <button
                     @click="jump"
                     @touchstart.prevent="jump"
-                    class="w-16 h-16 bg-cyan-500 border-2 border-cyan-300 text-slate-950 font-black rounded-2xl backdrop-blur-md flex items-center justify-center active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all cursor-pointer mr-2"
+                    class="w-16 h-16 bg-cyan-500 border-2 border-cyan-300 text-slate-950 font-black rounded-2xl backdrop-blur-md flex items-center justify-center active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all cursor-pointer md:mr-2"
                 >
                     <i class="fas fa-arrow-up text-2xl"></i>
                 </button>
+
+                <!-- Flèche Droite : visible seulement à partir de l'écran medium (md:) -->
                 <button
                     @mousedown="
                         keys.right = true;
@@ -665,7 +772,7 @@ onUnmounted(() => {
                         player.direction = 'right';
                     "
                     @touchend.prevent="keys.right = false"
-                    class="w-16 h-16 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl backdrop-blur-md flex items-center justify-center active:bg-cyan-500/40 text-cyan-400 shadow-lg active:scale-95 transition-all cursor-pointer"
+                    class="hidden md:flex w-16 h-16 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl backdrop-blur-md items-center justify-center active:bg-cyan-500/40 text-cyan-400 shadow-lg active:scale-95 transition-all cursor-pointer"
                 >
                     <svg
                         class="w-8 h-8"
@@ -680,6 +787,80 @@ onUnmounted(() => {
                             d="M9 5l7 7-7 7"
                         ></path>
                     </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL REGLAGES AUDIO -->
+        <div
+            v-if="isSettingsOpen"
+            class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 pointer-events-auto"
+        >
+            <div class="w-full max-w-sm bg-slate-900 border-2 border-cyan-500/60 rounded-2xl p-6 shadow-[0_0_30px_rgba(34,211,238,0.3)] relative">
+                <button
+                    @click="isSettingsOpen = false"
+                    class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold"
+                >
+                    &times;
+                </button>
+
+                <h2 class="text-xl font-black text-cyan-400 mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> PARAMÈTRES AUDIO
+                </h2>
+
+                <!-- MUSIQUE DE FOND -->
+                <div class="mb-5 space-y-2">
+                    <div class="flex justify-between items-center text-sm font-bold">
+                        <span>Musique de fond</span>
+                        <button
+                            @click="
+                                audioSettings.bgMusicMuted = !audioSettings.bgMusicMuted;
+                                updateBgVolume();
+                            "
+                            class="px-3 py-1 rounded-lg text-xs font-bold transition-all"
+                            :class="audioSettings.bgMusicMuted ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'"
+                        >
+                            {{ audioSettings.bgMusicMuted ? 'MUTÉ' : 'ACTIF' }}
+                        </button>
+                    </div>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        v-model.number="audioSettings.bgMusicVolume"
+                        @input="updateBgVolume"
+                        class="w-full accent-cyan-400 bg-slate-800 rounded-lg cursor-pointer"
+                    />
+                </div>
+
+                <!-- EFFETS SONORES (PIÈCES) -->
+                <div class="mb-6 space-y-2">
+                    <div class="flex justify-between items-center text-sm font-bold">
+                        <span>Effets sonores (Pièces)</span>
+                        <button
+                            @click="audioSettings.sfxMuted = !audioSettings.sfxMuted"
+                            class="px-3 py-1 rounded-lg text-xs font-bold transition-all"
+                            :class="audioSettings.sfxMuted ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'"
+                        >
+                            {{ audioSettings.sfxMuted ? 'MUTÉ' : 'ACTIF' }}
+                        </button>
+                    </div>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        v-model.number="audioSettings.sfxVolume"
+                        class="w-full accent-cyan-400 bg-slate-800 rounded-lg cursor-pointer"
+                    />
+                </div>
+
+                <button
+                    @click="isSettingsOpen = false"
+                    class="w-full py-3 bg-cyan-500 text-slate-950 rounded-xl font-black hover:bg-cyan-400 transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)]"
+                >
+                    FERMER
                 </button>
             </div>
         </div>
@@ -710,7 +891,7 @@ onUnmounted(() => {
                 class="mb-8 text-slate-400 text-base max-w-md font-medium leading-relaxed"
             >
                 Utilise le joystick virtuel ou les flèches pour te déplacer dans
-                ce monde 3D. Saute par-dessus les trous et approche-toi des bornes pour découvrir mes projets.
+                ce monde 3D. Saute par-dessus les trous et récupère les pièces pour maximiser ton score !
             </p>
 
             <button
@@ -726,8 +907,13 @@ onUnmounted(() => {
             v-if="gameState === 'VICTORY'"
             class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex flex-col items-center justify-center p-4 text-center"
         >
-            <div class="text-7xl mb-6 animate-bounce"><i class="fa-solid fa-trophy"></i></div>
-            <h1 class="text-4xl font-black text-white mb-3">FIN DU PARCOURS</h1>
+            <div class="text-7xl mb-4 animate-bounce text-amber-400">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h1 class="text-4xl font-black text-white mb-2">FIN DU PARCOURS</h1>
+            <p class="text-lg font-bold text-amber-400 mb-2">
+                Pièces récoltées : {{ score }}
+            </p>
             <p class="mb-8 text-slate-400 text-base">
                 Tu as exploré toutes les stations de mon portfolio !
             </p>
@@ -785,18 +971,5 @@ onUnmounted(() => {
 
 .entity-3d {
     transform-style: preserve-3d;
-}
-
-@keyframes walk {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-5px);
-    }
-}
-.animate-walk {
-    animation: walk 0.25s infinite ease-in-out;
 }
 </style>
