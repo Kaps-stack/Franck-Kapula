@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+import { Motion } from "motion-v";
 
 import Layout from "@/Layouts/PortfolioLayout.vue";
 
@@ -51,14 +52,6 @@ const featuredServices = services.filter(
 |--------------------------------------------------------------------------
 | ICON
 |--------------------------------------------------------------------------
-|
-| Si icon contient une classe Font Awesome :
-| fa-solid fa-code
-|
-| Si icon contient une image :
-| icons/service.png
-|
-|--------------------------------------------------------------------------
 */
 
 const isImageIcon = (service) => {
@@ -86,6 +79,7 @@ const iconUrl = (service) => {
     return service?.icon || null;
 };
 
+
 /*
 |--------------------------------------------------------------------------
 | FONT AWESOME ICON
@@ -99,10 +93,12 @@ const serviceIcon = (service) => {
 
     return service.icon;
 };
+
 </script>
 
 
 <template>
+
 <!-- ========================================================= -->
 <!-- SECTION 1 — MES SERVICES -->
 <!-- ========================================================= -->
@@ -110,15 +106,36 @@ const serviceIcon = (service) => {
 <section
     class="mx-auto overflow-hidden border border-white/10 bg-[#450057]"
 >
+
     <div
         class="flex flex-col items-center gap-10 px-7 py-12 sm:px-10 lg:flex-row lg:px-14 lg:py-16"
     >
+
 
         <!-- ================================================= -->
         <!-- TEXT -->
         <!-- ================================================= -->
 
-        <div
+        <Motion
+            :initial="{
+                opacity: 0,
+                x: -100
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                x: 0
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.8,
+                ease: 'easeOut'
+            }"
+
             class="w-full max-w-2xl lg:w-1/2"
         >
 
@@ -145,14 +162,34 @@ const serviceIcon = (service) => {
 
             </div>
 
-        </div>
+        </Motion>
+
 
 
         <!-- ================================================= -->
         <!-- IMAGE -->
         <!-- ================================================= -->
 
-        <div
+        <Motion
+            :initial="{
+                opacity: 0,
+                x: 100
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                x: 0
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.8,
+                ease: 'easeOut'
+            }"
+
             class="mt-4 flex w-full items-center justify-center lg:w-1/2"
         >
 
@@ -168,11 +205,13 @@ const serviceIcon = (service) => {
 
             </div>
 
-        </div>
+        </Motion>
+
 
     </div>
 
 </section>
+
 
 
 <!-- ========================================================= -->
@@ -184,9 +223,6 @@ const serviceIcon = (service) => {
     class="bg-[#00574b] px-7 py-14 sm:px-10 lg:px-14"
 >
 
-    <!-- ================================================= -->
-    <!-- HEADING -->
-    <!-- ================================================= -->
 
     <div
         class="mx-auto mb-16 max-w-7xl px-6"
@@ -222,8 +258,6 @@ const serviceIcon = (service) => {
         </div>
 
     </div>
-
-
     <!-- ================================================= -->
     <!-- FEATURED GRID -->
     <!-- ================================================= -->
@@ -232,24 +266,35 @@ const serviceIcon = (service) => {
         class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-3"
     >
 
-        <article
+        <Motion
             v-for="(service, index) in featuredServices"
             :key="service.id"
+
+            :initial="{
+                opacity: 0,
+                scale: 0.85
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                scale: 1
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.5,
+                delay: index * 0.1,
+                ease: 'easeOut'
+            }"
+
             class="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101116] p-8 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-2 hover:border-emerald-300/40 hover:shadow-xl hover:shadow-black/30"
         >
 
-            <!-- ================================================= -->
-            <!-- TOP LINE -->
-            <!-- ================================================= -->
 
-            <div
-                class="absolute left-0 top-0 h-1 w-full bg-emerald-400/70 transition duration-300 group-hover:bg-emerald-300"
-            ></div>
-
-
-            <!-- ================================================= -->
             <!-- HEADER -->
-            <!-- ================================================= -->
 
             <div
                 class="flex items-center justify-between"
@@ -277,17 +322,14 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
+
             <!-- ICON -->
-            <!-- ================================================= -->
 
             <div class="mt-8">
 
                 <div
-                    class="flex h-20 w-20 items-center justify-center rounded-2xl border  bg-emerald-400/10 transition duration-300 group-hover:border-emerald-300/40 group-hover:bg-emerald-400/20"
+                    class="flex h-20 w-20 items-center justify-center rounded-2xl border bg-emerald-400/10 transition duration-300 group-hover:border-emerald-300/40 group-hover:bg-emerald-400/20"
                 >
-
-                    <!-- IMAGE -->
 
                     <img
                         v-if="isImageIcon(service)"
@@ -296,8 +338,6 @@ const serviceIcon = (service) => {
                         class="h-11 w-11 object-contain"
                     />
 
-
-                    <!-- FONT AWESOME -->
 
                     <i
                         v-else
@@ -310,9 +350,8 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
+
             <!-- TITLE -->
-            <!-- ================================================= -->
 
             <div class="mt-7">
 
@@ -326,9 +365,8 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
+
             <!-- DESCRIPTION -->
-            <!-- ================================================= -->
 
             <div
                 v-if="service.description"
@@ -344,9 +382,8 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
-            <!-- BOTTOM -->
-            <!-- ================================================= -->
+
+            <!-- FOOTER -->
 
             <div
                 class="mt-8 flex items-center justify-between border-t border-white/10 pt-5"
@@ -365,25 +402,28 @@ const serviceIcon = (service) => {
 
             </div>
 
-        </article>
+
+        </Motion>
+
 
     </div>
 
+
 </section>
+
+
 
 
 <!-- ========================================================= -->
 <!-- SECTION 3 — TOUS LES SERVICES -->
 <!-- ========================================================= -->
 
+
 <section
     v-if="services.length"
     class="bg-[#00574b] px-7 py-14 sm:px-10 lg:px-14"
 >
 
-    <!-- ================================================= -->
-    <!-- HEADING -->
-    <!-- ================================================= -->
 
     <div
         class="mx-auto mb-16 max-w-7xl px-6"
@@ -421,23 +461,40 @@ const serviceIcon = (service) => {
     </div>
 
 
-    <!-- ================================================= -->
-    <!-- SERVICES GRID -->
-    <!-- ================================================= -->
 
     <div
         class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:grid-cols-3"
     >
 
-        <article
+        <Motion
             v-for="(service, index) in services"
             :key="service.id"
+
+            :initial="{
+                opacity: 0,
+                scale: 0.85
+            }"
+
+            :whileInView="{
+                opacity: 1,
+                scale: 1
+            }"
+
+            :viewport="{
+                once: true
+            }"
+
+            :transition="{
+                duration: 0.45,
+                delay: index * 0.08,
+                ease: 'easeOut'
+            }"
+
             class="group relative rounded-2xl border border-white/10 bg-[#101116] p-6 transition duration-300 hover:-translate-y-6 hover:border-indigo-400/40 hover:bg-[#14151c]"
         >
 
-            <!-- ================================================= -->
+
             <!-- NUMBER -->
-            <!-- ================================================= -->
 
             <div
                 class="flex items-center justify-between"
@@ -460,17 +517,14 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
+
             <!-- ICON -->
-            <!-- ================================================= -->
 
             <div class="mt-6">
 
                 <div
                     class="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 transition duration-300 group-hover:bg-indigo-400/10"
                 >
-
-                    <!-- IMAGE -->
 
                     <img
                         v-if="isImageIcon(service)"
@@ -480,22 +534,20 @@ const serviceIcon = (service) => {
                     />
 
 
-                    <!-- FONT AWESOME -->
-
                     <i
                         v-else
                         :class="serviceIcon(service)"
                         class="text-xl text-indigo-400"
                     ></i>
 
+
                 </div>
 
             </div>
 
 
-            <!-- ================================================= -->
+
             <!-- TITLE -->
-            <!-- ================================================= -->
 
             <div class="mt-6">
 
@@ -509,9 +561,8 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
+
             <!-- DESCRIPTION -->
-            <!-- ================================================= -->
 
             <div
                 v-if="service.description"
@@ -527,69 +578,22 @@ const serviceIcon = (service) => {
             </div>
 
 
-            <!-- ================================================= -->
-            <!-- FOOTER -->
-            <!-- ================================================= -->
+        </Motion>
 
-
-
-        </article>
 
     </div>
+
 
 </section>
 
 
-<!-- ========================================================= -->
-<!-- EMPTY -->
-<!-- ========================================================= -->
 
-<section
-    v-if="!services.length"
-    class="mx-auto bg-[#101116] px-7 py-16 text-center sm:px-10"
->
-
-    <div
-        class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5"
-    >
-
-        <i
-            class="fa-solid fa-briefcase text-2xl text-slate-500"
-        ></i>
-
-    </div>
-
-
-    <div class="mt-6">
-
-        <Title
-            size="md"
-            class="font-sans text-white"
-        >
-            Aucun service disponible
-        </Title>
-
-    </div>
-
-
-    <div
-        class="mx-auto mt-3 max-w-md"
-    >
-
-        <Body
-            class="font-sans text-slate-500"
-        >
-            Les services seront bientôt disponibles.
-        </Body>
-
-    </div>
-
-</section>
 
 
 <!-- ========================================================= -->
 <!-- BACK -->
 <!-- ========================================================= -->
+
 
 <div
     class="mx-auto mt-16 max-w-7xl px-6"
@@ -610,6 +614,5 @@ const serviceIcon = (service) => {
 
 </div>
 
+
 </template>
-
-
