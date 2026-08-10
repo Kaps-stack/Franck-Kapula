@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 // Remonte de Pages/ (..) vers js/ puis rentre dans assets/audio/
-import bgMusicUrl from '@/assets/audio/son.mp3';
+import bgMusicUrl from "@/assets/audio/son.mp3";
 // --- DONNÉES DU PORTFOLIO (Les stations dans le monde 3D) ---
 const portfolioStations = [
     {
@@ -98,7 +98,9 @@ const generateCoins = () => {
     // Génération de pièces régulièrement réparties le long du monde
     for (let x = 400; x < worldWidth - 400; x += 250) {
         // Vérifier qu'on n'est pas au-dessus d'un trou
-        const isOverHole = holes.value.some(h => x >= h.x - 40 && x <= h.x + h.width + 40);
+        const isOverHole = holes.value.some(
+            (h) => x >= h.x - 40 && x <= h.x + h.width + 40,
+        );
         if (!isOverHole) {
             // Hauteur aléatoire : au sol (0) ou en hauteur (saut nécessaire, ex: -60 à -110)
             const isHigh = Math.random() > 0.4;
@@ -107,7 +109,7 @@ const generateCoins = () => {
                 id: coinId++,
                 x: x,
                 y: y,
-                collected: false
+                collected: false,
             });
         }
     }
@@ -118,7 +120,7 @@ const generateCoins = () => {
 const isSettingsOpen = ref(false);
 const audioSettings = reactive({
     bgMusicMuted: false,
-    bgMusicVolume: 0.3,
+    bgMusicVolume: 0.1,
     sfxMuted: false,
     sfxVolume: 0.7,
 });
@@ -154,7 +156,7 @@ const updateBgVolume = () => {
         bgAudio.volume = audioSettings.bgMusicVolume;
         if (audioSettings.bgMusicMuted) {
             bgAudio.pause();
-        } else if (gameState.value === 'PLAYING') {
+        } else if (gameState.value === "PLAYING") {
             bgAudio.play().catch(() => {});
         }
     }
@@ -167,12 +169,12 @@ const playCoinSound = () => {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (audioCtx.state === 'suspended') {
+        if (audioCtx.state === "suspended") {
             audioCtx.resume();
         }
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
 
         // Fréquence aiguë montante typique d'un son de pièce
         const now = audioCtx.currentTime;
@@ -216,7 +218,8 @@ let animationFrameId = null;
 
 // --- SAUT ---
 const jump = () => {
-    if (gameState.value !== "PLAYING" || player.isJumping || player.isFallen) return;
+    if (gameState.value !== "PLAYING" || player.isJumping || player.isFallen)
+        return;
     player.isJumping = true;
     player.velocityY = jumpPower;
 };
@@ -295,7 +298,12 @@ const handleKeyDown = (e) => {
         keys.right = true;
         player.direction = "right";
     }
-    if (e.key === " " || e.key === "ArrowUp" || e.key === "w" || e.key === "z") {
+    if (
+        e.key === " " ||
+        e.key === "ArrowUp" ||
+        e.key === "w" ||
+        e.key === "z"
+    ) {
         jump();
     }
 };
@@ -379,7 +387,7 @@ const loop = () => {
     // Test de collision avec les Trous (Si le joueur ne saute pas)
     if (!player.isJumping && player.y >= 0) {
         const fallenHole = holes.value.find(
-            (h) => player.x > h.x + 20 && player.x < h.x + h.width - 20
+            (h) => player.x > h.x + 20 && player.x < h.x + h.width - 20,
         );
         if (fallenHole) {
             player.isFallen = true;
@@ -448,7 +456,9 @@ onUnmounted(() => {
         <header
             class="absolute top-0 w-full p-4 flex justify-between items-center z-50 bg-slate-900/80 backdrop-blur-md border-b border-cyan-500/20 shadow-lg"
         >
-            <div class="w-full flex items-center gap-3 md:gap-4 justify-between">
+            <div
+                class="w-full flex items-center gap-3 md:gap-4 justify-between"
+            >
                 <div
                     class="font-black text-cyan-400 text-lg tracking-wider hidden md:block whitespace-nowrap"
                 >
@@ -456,8 +466,12 @@ onUnmounted(() => {
                 </div>
 
                 <!-- COMPTEUR DE PIÈCES -->
-                <div class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow">
-                    <i class="fa-solid fa-coins text-amber-400 animate-pulse"></i>
+                <div
+                    class="flex items-center gap-2 bg-slate-800/90 border border-amber-500/40 px-3 py-1 rounded-full text-amber-400 font-black text-sm shadow"
+                >
+                    <i
+                        class="fa-solid fa-coins text-amber-400 animate-pulse"
+                    ></i>
                     <span>{{ score }}</span>
                 </div>
 
@@ -511,7 +525,8 @@ onUnmounted(() => {
                     <p
                         class="text-xs md:text-sm font-bold text-cyan-300 tracking-wide"
                     >
-                        Sautez par-dessus les trous et récupérez les pièces, et explorez mon portfolio
+                        Sautez par-dessus les trous et récupérez les pièces, et
+                        explorez mon portfolio
                     </p>
                 </div>
             </div>
@@ -540,11 +555,24 @@ onUnmounted(() => {
                         v-for="hole in holes"
                         :key="'hole-' + hole.id"
                         class="absolute top-0 h-full bg-slate-950/95 border-x-2 border-cyan-500/80 shadow-[inset_0_0_30px_#000]"
-                        :style="{ left: hole.x + 'px', width: hole.width + 'px' }"
+                        :style="{
+                            left: hole.x + 'px',
+                            width: hole.width + 'px',
+                        }"
                     >
-                        <div class="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-950/40 via-slate-950 to-slate-950"></div>
-                        <div class="absolute -top-5 -left-3 text-yellow-400 text-xs font-black animate-bounce">⚠️</div>
-                        <div class="absolute -top-5 -right-3 text-yellow-400 text-xs font-black animate-bounce">⚠️</div>
+                        <div
+                            class="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-950/40 via-slate-950 to-slate-950"
+                        ></div>
+                        <div
+                            class="absolute -top-5 -left-3 text-yellow-400 text-xs font-black animate-bounce"
+                        >
+                            ⚠️
+                        </div>
+                        <div
+                            class="absolute -top-5 -right-3 text-yellow-400 text-xs font-black animate-bounce"
+                        >
+                            ⚠️
+                        </div>
                     </div>
                 </div>
 
@@ -556,10 +584,12 @@ onUnmounted(() => {
                     class="absolute bottom-36 flex flex-col items-center pointer-events-none transition-transform"
                     :style="{
                         left: coin.x + 'px',
-                        transform: `translateX(-50%) translateY(${coin.y}px)`
+                        transform: `translateX(-50%) translateY(${coin.y}px)`,
                     }"
                 >
-                    <div class="w-7 h-7 bg-amber-400 border-2 border-amber-200 rounded-full flex items-center justify-center text-slate-950 font-black text-xs shadow-[0_0_15px_#f59e0b] animate-bounce">
+                    <div
+                        class="w-7 h-7 bg-amber-400 border-2 border-amber-200 rounded-full flex items-center justify-center text-slate-950 font-black text-xs shadow-[0_0_15px_#f59e0b] animate-bounce"
+                    >
                         <i class="fa-solid fa-coins"></i>
                     </div>
                 </div>
@@ -577,13 +607,19 @@ onUnmounted(() => {
                         :href="station.route"
                         class="absolute -top-16 bg-cyan-400 text-slate-900 px-5 py-2 rounded-full font-black text-sm animate-bounce whitespace-nowrap shadow-[0_0_25px_#22d3ee] flex items-center gap-2 pointer-events-auto z-50 hover:bg-white hover:scale-110 transition-all no-underline cursor-pointer"
                     >
-                        <span class="text-xl"><i class="fa-solid fa-arrow-right"></i></span> OUVRIR LA PAGE
+                        <span class="text-xl"
+                            ><i class="fa-solid fa-arrow-right"></i
+                        ></span>
+                        OUVRIR LA PAGE
                     </a>
 
                     <!-- Hologramme / Titre flottant -->
                     <div
                         class="mb-4 bg-slate-900/90 border border-cyan-500/60 px-4 py-2 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.3)] text-center animate-bounce backdrop-blur"
-                        :class="{ 'border-cyan-300 shadow-[0_0_30px_rgba(34,211,238,0.8)] scale-110 transition-all': station.isNear }"
+                        :class="{
+                            'border-cyan-300 shadow-[0_0_30px_rgba(34,211,238,0.8)] scale-110 transition-all':
+                                station.isNear,
+                        }"
                     >
                         <span
                             class="text-xs text-cyan-400 font-bold block tracking-widest"
@@ -597,16 +633,25 @@ onUnmounted(() => {
                     <!-- Borne / Portail 3D -->
                     <div
                         class="relative w-24 h-40 bg-gradient-to-t from-indigo-950 to-slate-900 border-2 border-cyan-400 rounded-t-2xl flex flex-col items-center justify-between p-3 shadow-[0_0_35px_rgba(34,211,238,0.5)]"
-                        :class="{ 'shadow-[0_0_50px_rgba(34,211,238,0.8)] border-cyan-300 transition-all': station.isNear }"
+                        :class="{
+                            'shadow-[0_0_50px_rgba(34,211,238,0.8)] border-cyan-300 transition-all':
+                                station.isNear,
+                        }"
                     >
                         <div
                             class="w-16 h-24 bg-cyan-950/80 rounded-lg border border-cyan-300/50 flex items-center justify-center text-4xl shadow-[inset_0_0_15px_rgba(34,211,238,0.5)]"
                         >
-                            <i :class="station.icon" class="text-cyan-400 drop-shadow-md"></i>
+                            <i
+                                :class="station.icon"
+                                class="text-cyan-400 drop-shadow-md"
+                            ></i>
                         </div>
                         <div
                             class="w-20 h-3 bg-cyan-500 rounded-full shadow-[0_0_12px_#22d3ee]"
-                            :class="{ 'bg-cyan-300 shadow-[0_0_20px_#67e8f9]': station.isNear }"
+                            :class="{
+                                'bg-cyan-300 shadow-[0_0_20px_#67e8f9]':
+                                    station.isNear,
+                            }"
                         ></div>
                     </div>
                 </div>
@@ -628,7 +673,10 @@ onUnmounted(() => {
                     <!-- Corps du personnage en relief -->
                     <div
                         class="relative w-14 h-24 flex flex-col items-center"
-                        :class="{ 'animate-walk': player.isMoving && !player.isJumping }"
+                        :class="{
+                            'animate-walk':
+                                player.isMoving && !player.isJumping,
+                        }"
                     >
                         <!-- Tête -->
                         <div
@@ -658,11 +706,17 @@ onUnmounted(() => {
                         <div class="flex gap-1.5 mt-0.5">
                             <div
                                 class="w-3.5 h-6 bg-slate-700 rounded-b-md shadow"
-                                :class="{ 'rotate-12': player.isMoving || player.isJumping }"
+                                :class="{
+                                    'rotate-12':
+                                        player.isMoving || player.isJumping,
+                                }"
                             ></div>
                             <div
                                 class="w-3.5 h-6 bg-slate-700 rounded-b-md shadow"
-                                :class="{ '-rotate-12': player.isMoving || player.isJumping }"
+                                :class="{
+                                    '-rotate-12':
+                                        player.isMoving || player.isJumping,
+                                }"
                             ></div>
                         </div>
                     </div>
@@ -796,7 +850,9 @@ onUnmounted(() => {
             v-if="isSettingsOpen"
             class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 pointer-events-auto"
         >
-            <div class="w-full max-w-sm bg-slate-900 border-2 border-cyan-500/60 rounded-2xl p-6 shadow-[0_0_30px_rgba(34,211,238,0.3)] relative">
+            <div
+                class="w-full max-w-sm bg-slate-900 border-2 border-cyan-500/60 rounded-2xl p-6 shadow-[0_0_30px_rgba(34,211,238,0.3)] relative"
+            >
                 <button
                     @click="isSettingsOpen = false"
                     class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold"
@@ -804,23 +860,38 @@ onUnmounted(() => {
                     &times;
                 </button>
 
-                <h2 class="text-xl font-black text-cyan-400 mb-6 flex items-center gap-2">
+                <h2
+                    class="text-xl font-black text-cyan-400 mb-6 flex items-center gap-2"
+                >
                     <i class="fa-solid fa-sliders"></i> PARAMÈTRES AUDIO
                 </h2>
 
                 <!-- MUSIQUE DE FOND -->
                 <div class="mb-5 space-y-2">
-                    <div class="flex justify-between items-center text-sm font-bold">
+                    <div
+                        class="flex justify-between items-center text-sm font-bold"
+                    >
                         <span>Musique de fond</span>
                         <button
                             @click="
-                                audioSettings.bgMusicMuted = !audioSettings.bgMusicMuted;
+                                audioSettings.bgMusicMuted =
+                                    !audioSettings.bgMusicMuted;
                                 updateBgVolume();
                             "
-                            class="px-3 py-1 rounded-lg text-xs font-bold transition-all"
-                            :class="audioSettings.bgMusicMuted ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'"
+                            class="px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                            :class="
+                                audioSettings.bgMusicMuted
+                                    ? 'bg-red-500/20 text-red-400 border border-red-500/40'
+                                    : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
+                            "
                         >
-                            {{ audioSettings.bgMusicMuted ? 'MUTÉ' : 'ACTIF' }}
+                            <i
+                                :class="
+                                    audioSettings.bgMusicMuted
+                                        ? 'fa-solid fa-bell-slash'
+                                        : 'fa-solid fa-bell'
+                                "
+                            ></i>
                         </button>
                     </div>
                     <input
@@ -836,14 +907,28 @@ onUnmounted(() => {
 
                 <!-- EFFETS SONORES (PIÈCES) -->
                 <div class="mb-6 space-y-2">
-                    <div class="flex justify-between items-center text-sm font-bold">
+                    <div
+                        class="flex justify-between items-center text-sm font-bold"
+                    >
                         <span>Effets sonores (Pièces)</span>
                         <button
-                            @click="audioSettings.sfxMuted = !audioSettings.sfxMuted"
-                            class="px-3 py-1 rounded-lg text-xs font-bold transition-all"
-                            :class="audioSettings.sfxMuted ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'"
+                            @click="
+                                audioSettings.sfxMuted = !audioSettings.sfxMuted
+                            "
+                            class="px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                            :class="
+                                audioSettings.sfxMuted
+                                    ? 'bg-red-500/20 text-red-400 border border-red-500/40'
+                                    : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
+                            "
                         >
-                            {{ audioSettings.sfxMuted ? 'MUTÉ' : 'ACTIF' }}
+                            <i
+                                :class="
+                                    audioSettings.sfxMuted
+                                        ? 'fa-solid fa-bell-slash'
+                                        : 'fa-solid fa-bell'
+                                "
+                            ></i>
                         </button>
                     </div>
                     <input
@@ -891,7 +976,8 @@ onUnmounted(() => {
                 class="mb-8 text-slate-400 text-base max-w-md font-medium leading-relaxed"
             >
                 Utilise le joystick virtuel ou les flèches pour te déplacer dans
-                ce monde 3D. Saute par-dessus les trous et récupère les pièces pour maximiser ton score !
+                ce monde 3D. Saute par-dessus les trous et récupère les pièces
+                pour maximiser ton score !
             </p>
 
             <button
