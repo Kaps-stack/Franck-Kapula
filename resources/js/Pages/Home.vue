@@ -694,24 +694,53 @@ class="font-sans text-white"
 
 
 
-<div class="mt-7">
+<div class="mt-7 flex flex-wrap gap-3">
 
-<Link
+    <!-- DÉMO DISPONIBLE -->
+    <a
+        v-if="project.demo_url"
+        :href="project.demo_url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm text-slate-900 transition hover:bg-slate-200"
+    >
 
-:href="`/projects/${project.id}`"
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
 
-class="text-white"
+        Démo
 
->
+    </a>
 
-Voir le projet →
 
-</Link>
+    <!-- PAS DE DÉMO -->
+    <span
+        v-else
+        class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-slate-400"
+    >
 
+        <i class="fa-solid fa-eye-slash"></i>
+
+        Démo non disponible
+
+    </span>
+
+
+    <!-- GITHUB SI DISPONIBLE -->
+    <a
+        v-if="project.github_url"
+        :href="project.github_url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white transition hover:bg-white hover:text-slate-900"
+    >
+
+        <i class="fa-brands fa-github"></i>
+
+        GitHub
+
+    </a>
 
 </div>
-
-
 </div>
 
 
