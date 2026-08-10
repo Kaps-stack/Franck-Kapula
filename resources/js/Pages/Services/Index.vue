@@ -13,13 +13,6 @@ defineOptions({
     layout: Layout,
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| PROPS
-|--------------------------------------------------------------------------
-*/
-
 const props = defineProps({
     services: {
         type: Array,
@@ -27,32 +20,12 @@ const props = defineProps({
     },
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| SERVICES
-|--------------------------------------------------------------------------
-*/
-
 const services = props.services;
-
-
-/*
-|--------------------------------------------------------------------------
-| SERVICES PRINCIPAUX
-|--------------------------------------------------------------------------
-*/
 
 const featuredServices = services.filter(
     (service) => service.featured === true || service.featured === 1
 );
 
-
-/*
-|--------------------------------------------------------------------------
-| ICON
-|--------------------------------------------------------------------------
-*/
 
 const isImageIcon = (service) => {
     if (!service.icon) {
@@ -69,22 +42,10 @@ const isImageIcon = (service) => {
 };
 
 
-/*
-|--------------------------------------------------------------------------
-| ICON URL
-|--------------------------------------------------------------------------
-*/
-
 const iconUrl = (service) => {
     return service?.icon || null;
 };
 
-
-/*
-|--------------------------------------------------------------------------
-| FONT AWESOME ICON
-|--------------------------------------------------------------------------
-*/
 
 const serviceIcon = (service) => {
     if (!service.icon || isImageIcon(service)) {
@@ -99,362 +60,305 @@ const serviceIcon = (service) => {
 
 <template>
 
-<!-- ========================================================= -->
-<!-- SECTION 1 — MES SERVICES -->
-<!-- ========================================================= -->
-
 <section
     class="mx-auto overflow-hidden border border-white/10 bg-[#450057]"
 >
 
-    <div
-        class="flex flex-col items-center gap-10 px-7 py-12 sm:px-10 lg:flex-row lg:px-14 lg:py-16"
-    >
-
-
-        <!-- ================================================= -->
-        <!-- TEXT -->
-        <!-- ================================================= -->
-
-        <Motion
-            class="w-full max-w-2xl lg:w-1/2"
-            :initial="{
-                opacity:0,
-                x:-120,
-                scale:0.95
-            }"
-            :whileInView="{
-                opacity:1,
-                x:0,
-                scale:1
-            }"
-            :viewport="{
-                once:true,
-                amount:0.3
-            }"
-            :transition="{
-                duration:0.8,
-                ease:'easeOut'
-            }"
-        >
-
-            <div class="mt-16">
-
-                <Heading
-                    class="font-sans text-4xl text-white sm:text-5xl"
-                >
-                    Mes services
-                </Heading>
-
-            </div>
-
-
-            <div class="mt-6">
-
-                <Body
-                    class="font-sans leading-8 text-white/60"
-                >
-                    Découvrez les services que je propose pour concevoir,
-                    développer et améliorer des solutions numériques
-                    adaptées à vos besoins.
-                </Body>
-
-            </div>
-
-
-        </Motion>
-
-
-
-        <!-- ================================================= -->
-        <!-- IMAGE -->
-        <!-- ================================================= -->
-
-        <Motion
-            class="mt-4 flex w-full items-center justify-center lg:w-1/2"
-            :initial="{
-                opacity:0,
-                x:120,
-                rotate:8,
-                scale:0.9
-            }"
-            :whileInView="{
-                opacity:1,
-                x:0,
-                rotate:0,
-                scale:1
-            }"
-            :viewport="{
-                once:true,
-                amount:0.3
-            }"
-            :transition="{
-                duration:0.9,
-                ease:'easeOut'
-            }"
-        >
-
-            <div
-                class="h-64 w-64 sm:h-80 sm:w-80 lg:h-[24rem] lg:w-[24rem]"
-            >
-
-                <img
-                    src="../../assets/icons/services.png"
-                    alt="Mes services"
-                    class="h-full w-full object-contain"
-                />
-
-            </div>
-
-        </Motion>
-
-
-    </div>
-
-</section>
-
-
-
-<!-- ========================================================= -->
-<!-- SECTION 2 — SERVICES PRINCIPAUX -->
-<!-- ========================================================= -->
-
-
-<section
-    v-if="featuredServices.length"
-    class="bg-[#00574b] px-7 py-14 sm:px-10 lg:px-14"
->
-
-
-    <!-- ================================================= -->
-    <!-- HEADING -->
-    <!-- ================================================= -->
-
-
-    <Motion
-        class="mx-auto mb-16 max-w-7xl px-6"
-        :initial="{
-            opacity:0,
-            y:50
-        }"
-        :whileInView="{
-            opacity:1,
-            y:0
-        }"
-        :viewport="{
-            once:true
-        }"
-        :transition="{
-            duration:0.7
-        }"
-    >
-
-        <Small
-            class="font-sans uppercase tracking-[0.2em] text-emerald-300"
-        >
-            Mes domaines d'intervention
-        </Small>
-
-
-        <div class="mt-4">
-
-            <Title
-                class="font-sans text-white"
-            >
-                Services principaux
-            </Title>
-
-        </div>
-
-
-        <div class="mt-4">
-
-            <Body
-                class="max-w-2xl font-sans leading-7 text-slate-300"
-            >
-                Les services sur lesquels je me concentre
-                particulièrement dans mes projets professionnels.
-            </Body>
-
-        </div>
-
-
-    </Motion>
-
-
-
-    <!-- ================================================= -->
-    <!-- FEATURED GRID -->
-    <!-- ================================================= -->
-
-
-    <div
-        class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-3"
-    >
-
-        <Motion
-            v-for="(service,index) in featuredServices"
-            :key="service.id"
-            :initial="{
-                opacity:0,
-                y:80,
-                scale:0.85
-            }"
-            :whileInView="{
-                opacity:1,
-                y:0,
-                scale:1
-            }"
-            :viewport="{
-                once:true,
-                amount:0.2
-            }"
-            :transition="{
-                type:'spring',
-                stiffness:120,
-                damping:12,
-                delay:index * 0.12
-            }"
-        >
-
-            <article
-                class="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101116] p-8 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-2 hover:border-emerald-300/40 hover:shadow-xl hover:shadow-black/30"
-            >
-
-                <!-- suite dans la partie 2 -->
-
-            </article>
-
-        </Motion>
-
-
-    </div>
-
-
-</section>
-<!-- ================================================= -->
-<!-- HEADER -->
-<!-- ================================================= -->
-
 <div
-    class="flex items-center justify-between"
+    class="flex flex-col items-center gap-10 px-7 py-12 sm:px-10 lg:flex-row lg:px-14 lg:py-16"
 >
 
-    <div
-        class="flex h-9 min-w-9 items-center justify-center rounded-full bg-emerald-400/10 px-3"
-    >
 
-        <Small
-            class="font-sans font-semibold text-emerald-300"
-        >
-            {{ String(index + 1).padStart(2, "0") }}
-        </Small>
+<!-- TEXT -->
 
-    </div>
+<Motion
+    class="w-full max-w-2xl lg:w-1/2"
+    :initial="{
+        opacity: 0,
+        x: -120,
+        scale: 0.95
+    }"
+    :whileInView="{
+        opacity: 1,
+        x: 0,
+        scale: 1
+    }"
+    :viewport="{
+        once: true,
+        amount: 0.3
+    }"
+    :transition="{
+        duration: 0.8,
+        ease: 'easeOut'
+    }"
+>
 
 
-    <Small
-        class="font-sans uppercase tracking-[0.15em] text-slate-600"
-    >
-        Service
-    </Small>
+<div class="mt-16">
+
+<Heading
+    class="font-sans text-4xl text-white sm:text-5xl"
+>
+    Mes services
+</Heading>
 
 </div>
 
 
+<div class="mt-6">
 
-<!-- ================================================= -->
-<!-- ICON -->
-<!-- ================================================= -->
+<Body
+    class="font-sans leading-8 text-white/60"
+>
+    Découvrez les services que je propose pour concevoir,
+    développer et améliorer des solutions numériques
+    adaptées à vos besoins.
+</Body>
+
+</div>
+
+
+</Motion>
+
+
+
+<!-- IMAGE -->
+
+<Motion
+    class="mt-4 flex w-full items-center justify-center lg:w-1/2"
+    :initial="{
+        opacity: 0,
+        x: 120,
+        rotate: 8,
+        scale: 0.9
+    }"
+    :whileInView="{
+        opacity: 1,
+        x: 0,
+        rotate: 0,
+        scale: 1
+    }"
+    :viewport="{
+        once: true,
+        amount: 0.3
+    }"
+    :transition="{
+        duration: 0.9,
+        ease: 'easeOut'
+    }"
+>
+
+
+<div
+    class="h-64 w-64 sm:h-80 sm:w-80 lg:h-[24rem] lg:w-[24rem]"
+>
+
+<img
+    src="../../assets/icons/services.png"
+    alt="Mes services"
+    class="h-full w-full object-contain"
+/>
+
+</div>
+
+
+</Motion>
+
+
+</div>
+
+</section>
+
+
+
+
+<!-- SERVICES PRINCIPAUX -->
+
+
+<section
+v-if="featuredServices.length"
+class="bg-[#00574b] px-7 py-14 sm:px-10 lg:px-14"
+>
+
+
+<Motion
+    class="mx-auto mb-16 max-w-7xl px-6"
+    :initial="{
+        opacity:0,
+        y:50
+    }"
+    :whileInView="{
+        opacity:1,
+        y:0
+    }"
+    :viewport="{
+        once:true
+    }"
+    :transition="{
+        duration:0.7
+    }"
+>
+
+
+<Small
+    class="font-sans uppercase tracking-[0.2em] text-emerald-300"
+>
+    Mes domaines d'intervention
+</Small>
+
+
+<div class="mt-4">
+
+<Title class="font-sans text-white">
+    Services principaux
+</Title>
+
+</div>
+
+
+<div class="mt-4">
+
+<Body
+    class="max-w-2xl font-sans leading-7 text-slate-300"
+>
+    Les services sur lesquels je me concentre
+    particulièrement dans mes projets professionnels.
+</Body>
+
+</div>
+
+
+</Motion>
+
+
+
+<div
+class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-2 lg:grid-cols-3"
+>
+
+
+<Motion
+v-for="(service,index) in featuredServices"
+:key="service.id"
+
+:initial="{
+    opacity:0,
+    y:80,
+    scale:0.85
+}"
+
+:whileInView="{
+    opacity:1,
+    y:0,
+    scale:1
+}"
+
+:viewport="{
+    once:true,
+    amount:0.2
+}"
+
+:transition="{
+    type:'spring',
+    stiffness:120,
+    damping:12,
+    delay:index * 0.12
+}"
+>
+
+
+<article
+class="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#101116] p-8 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-2 hover:border-emerald-300/40 hover:shadow-xl hover:shadow-black/30"
+>
+
+
+<div class="flex items-center justify-between">
+
+
+<div
+class="flex h-9 min-w-9 items-center justify-center rounded-full bg-emerald-400/10 px-3"
+>
+
+<Small class="font-sans font-semibold text-emerald-300">
+{{ String(index + 1).padStart(2,"0") }}
+</Small>
+
+</div>
+
+
+<Small
+class="font-sans uppercase tracking-[0.15em] text-slate-600"
+>
+Service
+</Small>
+
+
+</div>
 
 
 <div class="mt-8">
 
-    <div
-        class="flex h-20 w-20 items-center justify-center rounded-2xl border bg-emerald-400/10 transition duration-300 group-hover:border-emerald-300/40 group-hover:bg-emerald-400/20"
-    >
-
-        <img
-            v-if="isImageIcon(service)"
-            :src="iconUrl(service)"
-            :alt="service.title"
-            class="h-11 w-11 object-contain"
-        />
+<div
+class="flex h-20 w-20 items-center justify-center rounded-2xl bg-emerald-400/10"
+>
 
 
-        <i
-            v-else
-            :class="serviceIcon(service)"
-            class="text-3xl text-emerald-300"
-        ></i>
+<img
+v-if="isImageIcon(service)"
+:src="iconUrl(service)"
+:alt="service.title"
+class="h-11 w-11 object-contain"
+/>
 
 
-    </div>
+<i
+v-else
+:class="serviceIcon(service)"
+class="text-3xl text-emerald-300"
+></i>
+
 
 </div>
 
-
-
-
-<!-- ================================================= -->
-<!-- TITLE -->
-<!-- ================================================= -->
+</div>
 
 
 <div class="mt-7">
 
-    <Title
-        size="md"
-        class="font-sans text-xl text-white"
-    >
-        {{ service.title }}
-    </Title>
+<Title
+size="md"
+class="font-sans text-xl text-white"
+>
+{{ service.title }}
+</Title>
 
 </div>
 
 
-
-
-<!-- ================================================= -->
-<!-- DESCRIPTION -->
-<!-- ================================================= -->
-
-
 <div
-    v-if="service.description"
-    class="mt-4"
+v-if="service.description"
+class="mt-4"
 >
 
-    <Body
-        class="font-sans leading-7 text-slate-400"
-    >
-        {{ service.description }}
-    </Body>
+<Body class="font-sans leading-7 text-slate-400">
+{{ service.description }}
+</Body>
 
 </div>
 
 
-
-
-<!-- ================================================= -->
-<!-- FOOTER -->
-<!-- ================================================= -->
-
-
 <div
-    class="mt-8 flex items-center justify-between border-t border-white/10 pt-5"
+class="mt-8 flex items-center justify-between border-t border-white/10 pt-5"
 >
 
-    <Small
-        class="font-sans text-slate-600"
-    >
-        Domaine d'expertise
-    </Small>
+<Small class="font-sans text-slate-600">
+Domaine d'expertise
+</Small>
 
 
-    <span
-        class="h-2 w-2 rounded-full bg-emerald-400 transition duration-300 group-hover:scale-150"
-    ></span>
+<span
+class="h-2 w-2 rounded-full bg-emerald-400"
+></span>
 
 
 </div>
@@ -468,13 +372,7 @@ const serviceIcon = (service) => {
 
 </div>
 
-
 </section>
-
-
-
-
-
 <!-- ========================================================= -->
 <!-- SECTION 3 — TOUS LES SERVICES -->
 <!-- ========================================================= -->
@@ -518,25 +416,21 @@ const serviceIcon = (service) => {
 
 <div class="mt-4">
 
-    <Title
-        class="font-sans text-white"
-    >
-        Tous mes services
-    </Title>
+<Title class="font-sans text-white">
+    Tous mes services
+</Title>
 
 </div>
 
 
-
 <div class="mt-4">
 
-    <Body
-        class="max-w-2xl font-sans leading-7 text-slate-300"
-    >
-        Retrouvez l'ensemble des services que je peux
-        proposer dans le cadre de projets numériques.
-    </Body>
-
+<Body
+    class="max-w-2xl font-sans leading-7 text-slate-300"
+>
+    Retrouvez l'ensemble des services que je peux
+    proposer dans le cadre de projets numériques.
+</Body>
 
 </div>
 
@@ -550,9 +444,7 @@ const serviceIcon = (service) => {
 
 
 
-<!-- ================================================= -->
-<!-- SERVICES GRID -->
-<!-- ================================================= -->
+<!-- GRID -->
 
 
 <div
@@ -595,7 +487,6 @@ const serviceIcon = (service) => {
 >
 
 
-
 <div
     class="flex items-center justify-between"
 >
@@ -604,7 +495,7 @@ const serviceIcon = (service) => {
 <Small
     class="font-sans font-semibold text-indigo-400"
 >
-    {{ String(index + 1).padStart(2,"0") }}
+{{ String(index + 1).padStart(2,"0") }}
 </Small>
 
 
@@ -613,11 +504,12 @@ const serviceIcon = (service) => {
     v-if="service.featured"
     class="rounded-full bg-emerald-400/10 px-3 py-1 font-sans text-emerald-400"
 >
-    Principal
+Principal
 </Small>
 
 
 </div>
+
 
 
 
@@ -636,6 +528,7 @@ const serviceIcon = (service) => {
     :alt="service.title"
     class="h-8 w-8 object-contain"
 />
+
 
 
 <i
@@ -661,9 +554,7 @@ const serviceIcon = (service) => {
     size="md"
     class="font-sans text-white"
 >
-
 {{ service.title }}
-
 </Title>
 
 
@@ -682,14 +573,11 @@ const serviceIcon = (service) => {
 <Body
     class="font-sans leading-7 text-slate-400"
 >
-
 {{ service.description }}
-
 </Body>
 
 
 </div>
-
 
 
 </article>
@@ -698,11 +586,12 @@ const serviceIcon = (service) => {
 </Motion>
 
 
-
 </div>
 
 
 </section>
+
+
 
 
 
@@ -723,12 +612,14 @@ const serviceIcon = (service) => {
     class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5"
 >
 
+
 <i
     class="fa-solid fa-briefcase text-2xl text-slate-500"
 ></i>
 
 
 </div>
+
 
 
 <div class="mt-6">
@@ -738,20 +629,24 @@ const serviceIcon = (service) => {
     size="md"
     class="font-sans text-white"
 >
-    Aucun service disponible
+Aucun service disponible
 </Title>
 
 
 </div>
 
 
-<div class="mx-auto mt-3 max-w-md">
+
+
+<div
+    class="mx-auto mt-3 max-w-md"
+>
 
 
 <Body
     class="font-sans text-slate-500"
 >
-    Les services seront bientôt disponibles.
+Les services seront bientôt disponibles.
 </Body>
 
 
@@ -759,6 +654,8 @@ const serviceIcon = (service) => {
 
 
 </section>
+
+
 
 
 
@@ -780,8 +677,9 @@ const serviceIcon = (service) => {
     class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 font-sans text-sm text-white transition hover:bg-white hover:text-slate-900"
 >
 
+
 <span>
-    ←
+←
 </span>
 
 
@@ -795,3 +693,4 @@ Retour à l'accueil
 
 
 </template>
+
