@@ -13,6 +13,31 @@ import Layout from "@/Layouts/PortfolioLayout.vue";
 
 import codingManAnimation from "../assets/animations/coding_man.json";
 import splashAnimation from "../assets/animations/splash.json";
+import { ref, onMounted } from "vue";
+
+const typedBio = ref("");
+
+const startTyping = () => {
+    const text =
+        profile?.bio?.substring(0, 500) + "..." ||
+        "Je transforme des idées en expériences numériques utiles, modernes et accessibles.";
+
+    let index = 0;
+
+    const interval = setInterval(() => {
+        typedBio.value += text[index];
+
+        index++;
+
+        if (index >= text.length) {
+            clearInterval(interval);
+        }
+    }, 35);
+};
+
+onMounted(() => {
+    startTyping();
+});
 
 defineOptions({
     layout: Layout,
@@ -213,13 +238,43 @@ const formatMonthYear = (date) => {
                     </div>
 
                     <!-- Bio -->
-                    <div class="mx-auto mt-6 max-w-3xl lg:mx-0">
-                        <Body class="font-sans text-justify text-white/80">
-                            {{
-                                profile?.bio?.substring(0, 500) + "..." ||
-                                "Je transforme des idées en expériences numériques utiles, modernes et accessibles."
-                            }}
-                        </Body>
+                    <div class="mx-auto mt-6 max-w-3xl lg:mx-<Motion
+    class="relative mt-6"
+    :initial="{
+        opacity:0
+    }"
+    :whileInView="{
+        opacity:1
+    }"
+    :viewport="{
+        once:true
+    }"
+    :transition="{
+        duration:0.8
+    }"
+>
+
+    <Body class="font-sans text-justify text-white/80">
+        {{ typedBio }}
+
+        <Motion
+            class="ml-2 inline-block"
+            :animate="{
+                rotate:[-15,10,-15],
+                y:[0,-3,0]
+            }"
+            :transition="{
+                duration:0.8,
+                repeat:Infinity,
+                ease:'easeInOut'
+            }"
+        >
+            <i class="fa-solid fa-pencil text-amber-200"></i>
+        </Motion>
+
+    </Body>
+
+</Motion>
                     </div>
 
                     <!-- Button -->
