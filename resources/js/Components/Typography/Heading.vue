@@ -2,13 +2,18 @@
 defineProps({
     size: {
         type: String,
-        default: 'xl'
-    }
-})
+        default: "xl",
+    },
+    tag: {
+        type: String,
+        default: "h2",
+    },
+});
 </script>
 
 <template>
-    <h1
+    <component
+        :is="tag"
         :class="{
             'text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight': size === 'xl',
             'text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight': size === 'lg',
@@ -16,5 +21,5 @@ defineProps({
         }"
     >
         <slot />
-    </h1>
+    </component>
 </template>
