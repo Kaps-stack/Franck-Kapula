@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+import { Motion } from "motion-v";
 import lottie from "lottie-web";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
@@ -133,6 +134,58 @@ const levelLabel = (level) => {
     }
 
     return "Débutant";
+});
+
+/*
+|--------------------------------------------------------------------------
+| MOTION
+|--------------------------------------------------------------------------
+*/
+
+const viewport = {
+    once: true,
+    amount: 0.15,
+};
+
+const reveal = {
+    initial: {
+        opacity: 0,
+        y: 30,
+    },
+
+    visible: {
+        opacity: 1,
+        y: 0,
+    },
+};
+
+const revealLeft = {
+    initial: {
+        opacity: 0,
+        x: -25,
+    },
+
+    visible: {
+        opacity: 1,
+        x: 0,
+    },
+};
+
+const revealScale = {
+    initial: {
+        opacity: 0,
+        scale: 0.96,
+    },
+
+    visible: {
+        opacity: 1,
+        scale: 1,
+    },
+};
+
+const motionTransition = {
+    duration: 0.55,
+    ease: "easeOut",
 };
 </script>
 
@@ -149,7 +202,14 @@ const levelLabel = (level) => {
             <!-- TEXT -->
             <!-- ================================================= -->
 
-            <div class="w-full max-w-2xl lg:w-1/2">
+            <Motion
+                tag="div"
+                class="w-full max-w-2xl lg:w-1/2"
+                :initial="reveal.initial"
+                :while-in-view="reveal.visible"
+                :viewport="viewport"
+                :transition="motionTransition"
+            >
                 <div class="mt-5">
                     <Heading class="font-sans text-3xl text-white sm:text-5xl">
                         Mes compétences
@@ -163,18 +223,28 @@ const levelLabel = (level) => {
                         modernes.
                     </Body>
                 </div>
-            </div>
+            </Motion>
 
             <!-- ================================================= -->
             <!-- LOTTIE -->
             <!-- ================================================= -->
 
-            <div class="flex w-full items-center justify-center lg:w-1/2">
+            <Motion
+                tag="div"
+                class="flex w-full items-center justify-center lg:w-1/2"
+                :initial="revealScale.initial"
+                :while-in-view="revealScale.visible"
+                :viewport="viewport"
+                :transition="{
+                    ...motionTransition,
+                    duration: 0.7,
+                }"
+            >
                 <div
                     ref="animationSkills"
                     class="h-64 w-64 sm:h-80 sm:w-80 lg:h-[24rem] lg:w-[24rem]"
                 ></div>
-            </div>
+            </Motion>
         </div>
     </section>
 
@@ -182,12 +252,22 @@ const levelLabel = (level) => {
     <!-- FEATURED SKILLS -->
     <!-- ========================================================= -->
 
-    <section v-if="featuredSkills.length" class="bg-[#003457] px-4 py-10 sm:px-7 sm:py-12">
+    <section
+        v-if="featuredSkills.length"
+        class="bg-[#003457] px-4 py-10 sm:px-7 sm:py-12"
+    >
         <!-- ================================================= -->
         <!-- HEADING -->
         <!-- ================================================= -->
 
-        <div class="mb-8 px-2 sm:mb-12 sm:px-6">
+        <Motion
+            tag="div"
+            class="mb-8 px-2 sm:mb-12 sm:px-6"
+            :initial="reveal.initial"
+            :while-in-view="reveal.visible"
+            :viewport="viewport"
+            :transition="motionTransition"
+        >
             <Title class="font-sans text-white">
                 Compétences principales
             </Title>
@@ -198,102 +278,121 @@ const levelLabel = (level) => {
                     mes projets.
                 </Body>
             </div>
-        </div>
+        </Motion>
 
         <!-- ================================================= -->
-        <!-- FEATURED GRID -->
+        <!-- FEATURED SKILLS — FUTURISTIC DISPLAY -->
         <!-- ================================================= -->
 
-        <div
-            class="grid grid-cols-1 gap-5 px-2 sm:px-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-        >
-            <article
-                v-for="skill in featuredSkills"
+        <div class="grid grid-cols-1 gap-3 px-2 sm:px-6 md:grid-cols-2 lg:grid-cols-3">
+            <Motion
+                v-for="(skill, index) in featuredSkills"
                 :key="skill.id"
-                class="group min-w-0 rounded-3xl border border-white/10 bg-[#101116] p-5 transition duration-300 hover:border-indigo-400/30"
+                tag="article"
+                class="group relative min-w-0 overflow-hidden border border-white/10 bg-[#101116] px-4 py-4 transition duration-300 hover:border-indigo-400/30 sm:px-5"
+                :initial="revealScale.initial"
+                :while-in-view="revealScale.visible"
+                :viewport="viewport"
+                :transition="{
+                    ...motionTransition,
+                    delay: index * 0.07,
+                }"
             >
-                <!-- ================================================= -->
-                <!-- TOP -->
-                <!-- ================================================= -->
+                <!-- subtle futuristic line -->
+                <div
+                    class="absolute left-0 top-0 h-px w-0 bg-indigo-400 transition-all duration-500 group-hover:w-full"
+                ></div>
 
-                <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-4">
+                    <!-- INDEX -->
+
+                    <Small
+                        class="hidden shrink-0 font-mono text-indigo-400/50 sm:block"
+                    >
+                        {{ String(index + 1).padStart(2, "0") }}
+                    </Small>
+
                     <!-- ICON -->
 
                     <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/5 sm:h-14 sm:w-14"
+                        class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/10 bg-white/5"
                     >
                         <img
                             v-if="skill.icon"
                             :src="skill.icon"
                             :alt="skill.name"
-                            class="h-7 w-7 object-contain sm:h-8 sm:w-8"
+                            class="h-6 w-6 object-contain"
                         />
 
                         <i
                             v-else
-                            class="fa-solid fa-code text-lg text-indigo-400 sm:text-xl"
+                            class="fa-solid fa-code text-indigo-400"
                         ></i>
+                    </div>
+
+                    <!-- NAME -->
+
+                    <div class="min-w-0 flex-1">
+                        <Small
+                            size="md"
+                            class="block break-words whitespace-normal font-sans leading-5 text-white"
+                        >
+                            {{ skill.name }}
+                        </Small>
+
+                        <Small
+                            v-if="skill.category"
+                            class="mt-0.5 block truncate font-sans text-indigo-400"
+                        >
+                            {{ skill.category }}
+                        </Small>
                     </div>
 
                     <!-- LEVEL -->
 
-                    <Small
+                    <div
                         v-if="skill.level !== null"
-                        class="shrink-0 font-sans text-slate-500 text-right"
+                        class="shrink-0 text-right"
                     >
-                        {{ levelLabel(skill.level) }}
-                    </Small>
-                </div>
-
-                <!-- ================================================= -->
-                <!-- NAME -->
-                <!-- ================================================= -->
-
-                <div class="mt-5 min-h-[2.5rem]">
-                    <Small
-                        size="md"
-                        class="block break-words whitespace-normal font-sans leading-6 text-white"
-                    >
-                        {{ skill.name }}
-                    </Small>
-                </div>
-
-                <!-- ================================================= -->
-                <!-- CATEGORY -->
-                <!-- ================================================= -->
-
-                <div v-if="skill.category" class="mt-2">
-                    <Small class="block truncate font-sans text-indigo-400">
-                        {{ skill.category }}
-                    </Small>
-                </div>
-
-                <!-- ================================================= -->
-                <!-- LEVEL BAR -->
-                <!-- ================================================= -->
-
-                <div v-if="skill.level !== null" class="mt-6">
-                    <div class="h-1.5 overflow-hidden rounded-full bg-white/5">
-                        <div
-                            class="h-full rounded-full bg-indigo-400 transition-all duration-700"
-                            :style="{
-                                width: `${Math.min(
-                                    Math.max(skill.level, 0),
-                                    100,
-                                )}%`,
-                            }"
-                        ></div>
-                    </div>
-
-                    <div class="mt-2 flex items-center justify-between gap-3">
-                        <Small class="font-sans text-slate-600"> Niveau </Small>
-
-                        <Small class="font-sans text-slate-500">
+                        <Small
+                            class="block font-mono text-xs text-slate-500"
+                        >
                             {{ skill.level }}%
+                        </Small>
+
+                        <Small
+                            class="block font-sans text-[10px] text-slate-600"
+                        >
+                            {{ levelLabel(skill.level) }}
                         </Small>
                     </div>
                 </div>
-            </article>
+
+                <!-- PROGRESS -->
+
+                <div
+                    v-if="skill.level !== null"
+                    class="mt-3 h-px w-full overflow-hidden bg-white/5"
+                >
+                    <Motion
+                        tag="div"
+                        class="h-full bg-indigo-400"
+                        :initial="{ width: '0%' }"
+                        :while-in-view="{
+                            width: `${Math.min(
+                                Math.max(skill.level, 0),
+                                100,
+                            )}%`,
+                        }"
+                        :viewport="viewport"
+                        :transition="{
+                            duration: 0.9,
+                            delay: index * 0.07 + 0.25,
+                            ease: 'easeOut',
+                        }"
+                    />
+                </div>
+            </Motion>
         </div>
     </section>
 
@@ -301,13 +400,25 @@ const levelLabel = (level) => {
     <!-- ALL SKILLS -->
     <!-- ========================================================= -->
 
-    <section v-if="skillsByCategory.length" class="bg-[#00574b] px-4 py-10 sm:px-7 sm:py-12">
+    <section
+        v-if="skillsByCategory.length"
+        class="bg-[#00574b] px-4 py-10 sm:px-7 sm:py-12"
+    >
         <!-- ================================================= -->
         <!-- HEADING -->
         <!-- ================================================= -->
 
-        <div class="mb-10 px-2 sm:mb-16 sm:px-6">
-            <Title class="font-sans text-white"> Toutes mes compétences </Title>
+        <Motion
+            tag="div"
+            class="mb-10 px-2 sm:mb-16 sm:px-6"
+            :initial="reveal.initial"
+            :while-in-view="reveal.visible"
+            :viewport="viewport"
+            :transition="motionTransition"
+        >
+            <Title class="font-sans text-white">
+                Toutes mes compétences
+            </Title>
 
             <div class="mt-4">
                 <Body class="font-sans max-w-2xl text-slate-400">
@@ -315,27 +426,34 @@ const levelLabel = (level) => {
                     niveau de maîtrise.
                 </Body>
             </div>
-        </div>
+        </Motion>
 
         <!-- ================================================= -->
         <!-- CATEGORIES -->
         <!-- ================================================= -->
 
         <div class="space-y-12 sm:space-y-16">
-            <!-- ================================================= -->
-            <!-- CATEGORY GROUP -->
-            <!-- ================================================= -->
-
-            <div v-for="group in skillsByCategory" :key="group.category">
+            <Motion
+                v-for="(group, groupIndex) in skillsByCategory"
+                :key="group.category"
+                tag="div"
+                :initial="reveal.initial"
+                :while-in-view="reveal.visible"
+                :viewport="viewport"
+                :transition="{
+                    ...motionTransition,
+                    delay: groupIndex * 0.08,
+                }"
+            >
                 <!-- ================================================= -->
                 <!-- CATEGORY TITLE -->
                 <!-- ================================================= -->
 
-                <div class="mb-6 sm:mb-8 flex items-center gap-3 sm:gap-5">
+                <div class="mb-6 flex items-center gap-3 sm:mb-8 sm:gap-5">
                     <div class="h-px flex-1 bg-white/10"></div>
 
                     <Small
-                        class="font-sans uppercase tracking-[0.2em] text-indigo-400 text-center text-xs sm:text-sm"
+                        class="font-sans text-center text-xs uppercase tracking-[0.2em] text-indigo-400 sm:text-sm"
                     >
                         {{ group.category }}
                     </Small>
@@ -344,84 +462,115 @@ const levelLabel = (level) => {
                 </div>
 
                 <!-- ================================================= -->
-                <!-- SKILLS GRID (1 col mobile, sm:2, md:3, lg:4) -->
+                <!-- FUTURISTIC SKILLS LIST -->
                 <!-- ================================================= -->
 
-                <div
-                    class="grid grid-cols-1 gap-4 px-2 sm:px-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                >
-                    <article
-                        v-for="skill in group.skills"
+                <div class="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
+                    <Motion
+                        v-for="(skill, index) in group.skills"
                         :key="skill.id"
-                        class="group min-w-0 rounded-2xl border border-white/10 bg-[#101116] p-5 sm:p-6 transition duration-300 hover:border-white/20"
+                        tag="article"
+                        class="group relative min-w-0 overflow-hidden border border-white/10 bg-[#101116] transition duration-300 hover:border-white/20"
+                        :initial="revealLeft.initial"
+                        :while-in-view="revealLeft.visible"
+                        :viewport="viewport"
+                        :transition="{
+                            ...motionTransition,
+                            delay: index * 0.05,
+                        }"
                     >
-                        <!-- ================================================= -->
-                        <!-- TOP -->
-                        <!-- ================================================= -->
+                        <!-- LEFT ACCENT -->
 
-                        <div class="flex items-center gap-4">
+                        <div
+                            class="absolute left-0 top-0 h-full w-px bg-indigo-400/0 transition duration-300 group-hover:bg-indigo-400/70"
+                        ></div>
+
+                        <div
+                            class="flex min-h-[76px] items-center gap-3 px-4 py-3 sm:px-5"
+                        >
+                            <!-- NUMBER -->
+
+                            <Small
+                                class="w-6 shrink-0 font-mono text-xs text-slate-600"
+                            >
+                                {{ String(index + 1).padStart(2, "0") }}
+                            </Small>
+
                             <!-- ICON -->
 
                             <div
-                                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/5"
+                                class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/10 bg-white/5"
                             >
                                 <img
                                     v-if="skill.icon"
                                     :src="skill.icon"
                                     :alt="skill.name"
-                                    class="h-7 w-7 object-contain"
+                                    class="h-6 w-6 object-contain"
                                 />
 
                                 <i
                                     v-else
-                                    class="fa-solid fa-code text-indigo-400"
+                                    class="fa-solid fa-code text-sm text-indigo-400"
                                 ></i>
                             </div>
 
-                            <!-- NAME -->
+                            <!-- CONTENT -->
 
                             <div class="min-w-0 flex-1">
                                 <Title
                                     size="md"
-                                    class="font-sans text-white break-words whitespace-normal leading-snug"
+                                    class="font-sans break-words whitespace-normal leading-tight text-white"
                                 >
                                     {{ skill.name }}
                                 </Title>
-                            </div>
-                        </div>
 
-                        <!-- ================================================= -->
-                        <!-- LEVEL -->
-                        <!-- ================================================= -->
-
-                        <div v-if="skill.level !== null" class="mt-5">
-                            <div class="flex items-center justify-between">
-                                <Small class="font-sans text-slate-500">
-                                    {{ levelLabel(skill.level) }}
-                                </Small>
-
-                                <Small class="font-sans text-slate-500">
-                                    {{ skill.level }}%
-                                </Small>
-                            </div>
-
-                            <div
-                                class="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/5"
-                            >
                                 <div
-                                    class="h-full rounded-full bg-indigo-400"
-                                    :style="{
-                                        width: `${Math.min(
-                                            Math.max(skill.level, 0),
-                                            100,
-                                        )}%`,
-                                    }"
-                                ></div>
+                                    v-if="skill.level !== null"
+                                    class="mt-1.5 flex items-center gap-2"
+                                >
+                                    <Small
+                                        class="font-sans text-[10px] text-slate-600"
+                                    >
+                                        {{ levelLabel(skill.level) }}
+                                    </Small>
+
+                                    <div
+                                        class="h-px flex-1 overflow-hidden bg-white/5"
+                                    >
+                                        <Motion
+                                            tag="div"
+                                            class="h-full bg-indigo-400"
+                                            :initial="{ width: '0%' }"
+                                            :while-in-view="{
+                                                width: `${Math.min(
+                                                    Math.max(skill.level, 0),
+                                                    100,
+                                                )}%`,
+                                            }"
+                                            :viewport="viewport"
+                                            :transition="{
+                                                duration: 0.8,
+                                                delay:
+                                                    index * 0.05 + 0.25,
+                                                ease: 'easeOut',
+                                            }"
+                                        />
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- PERCENTAGE -->
+
+                            <Small
+                                v-if="skill.level !== null"
+                                class="shrink-0 font-mono text-xs text-slate-500"
+                            >
+                                {{ skill.level }}%
+                            </Small>
                         </div>
-                    </article>
+                    </Motion>
                 </div>
-            </div>
+            </Motion>
         </div>
     </section>
 
@@ -429,9 +578,14 @@ const levelLabel = (level) => {
     <!-- EMPTY -->
     <!-- ========================================================= -->
 
-    <section
+    <Motion
         v-if="!skills.length"
+        tag="section"
         class="mx-4 my-8 rounded-3xl border border-dashed border-white/10 bg-[#101116] p-8 text-center sm:p-16"
+        :initial="revealScale.initial"
+        :while-in-view="revealScale.visible"
+        :viewport="viewport"
+        :transition="motionTransition"
     >
         <div
             class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5"
@@ -450,13 +604,20 @@ const levelLabel = (level) => {
                 Les compétences seront bientôt disponibles.
             </Body>
         </div>
-    </section>
+    </Motion>
 
     <!-- ========================================================= -->
     <!-- BACK -->
     <!-- ========================================================= -->
 
-    <div class="mt-12 mb-10 px-4 sm:px-7">
+    <Motion
+        tag="div"
+        class="mt-12 mb-10 px-4 sm:px-7"
+        :initial="reveal.initial"
+        :while-in-view="reveal.visible"
+        :viewport="viewport"
+        :transition="motionTransition"
+    >
         <Link
             href="/"
             class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 font-sans text-sm text-white transition hover:bg-white hover:text-slate-900"
@@ -465,5 +626,5 @@ const levelLabel = (level) => {
 
             Retour à l'accueil
         </Link>
-    </div>
+    </Motion>
 </template>
