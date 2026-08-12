@@ -1,14 +1,9 @@
 <script setup>
-import Title from "@/Components/Typography/Title.vue";
-import Body from "@/Components/Typography/Body.vue";
-import Small from "@/Components/Typography/Small.vue";
-
 defineProps({
     interests: {
         type: Array,
         default: () => [],
     },
-
     languages: {
         type: Array,
         default: () => [],
@@ -16,350 +11,143 @@ defineProps({
 });
 </script>
 
-
 <template>
-
-    <!-- ========================================================= -->
-    <!-- CENTRES D'INTÉRÊT + LANGUES -->
-    <!-- ========================================================= -->
-
     <section
         v-if="interests.length || languages.length"
-        class="bg-[#450057] px-7 py-14 sm:px-10 lg:px-14"
+        class="border-y border-white/10 bg-[#0b0c10] py-8 sm:py-10"
     >
-
-        <div
-            class="mx-auto max-w-7xl"
-        >
+        <div class="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
 
             <!-- ================================================= -->
-            <!-- HEADER -->
+            <!-- 01. CENTRES D'INTÉRÊT -->
             <!-- ================================================= -->
 
-            <div class="mb-12">
-
-                <Small
-                    class="font-sans uppercase tracking-[0.2em] text-indigo-300"
-                >
-                    Profil
-                </Small>
-
-
-                <div class="mt-4">
-
-                    <Title
-                        class="font-sans text-white"
-                    >
-                        Centres d'intérêt & langues
-                    </Title>
-
+            <div v-if="interests.length">
+                <!-- HEADER -->
+                <div class="mb-4 flex items-center gap-3">
+                    <span class="h-1.5 w-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]"></span>
+                    <h3 class="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-indigo-400">
+                        Centres d'intérêt
+                    </h3>
+                    <div class="h-px flex-1 bg-white/10"></div>
                 </div>
 
-
-                <div class="mt-4">
-
-                    <Body
-                        class="max-w-2xl font-sans leading-7 text-slate-300"
+                <!-- CARROUSEL SUR MOBILE / GRILLE SUR DESKTOP -->
+                <div class="no-scrollbar flex gap-4 overflow-x-auto py-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
+                    <div
+                        v-for="interest in interests"
+                        :key="interest.id"
+                        class="carousel-item group relative h-40 w-48 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#12131a] transition-all duration-300 hover:border-indigo-400/50 lg:h-44 lg:w-full lg:shrink"
                     >
-                        Découvrez mes centres d'intérêt ainsi que les
-                        langues que je pratique et mon niveau de maîtrise.
-                    </Body>
+                        <!-- IMAGE EN AVANT-PLAN -->
+                        <img
+                            v-if="interest.icon"
+                            :src="interest.icon.startsWith('http') ? interest.icon : `/storage/${interest.icon}`"
+                            :alt="interest.name"
+                            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div v-else class="flex h-full w-full items-center justify-center bg-indigo-950/20">
+                            <i class="fa-solid fa-star text-3xl text-indigo-400/40"></i>
+                        </div>
 
+                        <!-- OVERLAY SOMBRE + TITRE SUPERPOSÉ -->
+                        <div class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <h4 class="truncate font-sans text-sm font-semibold text-white group-hover:text-indigo-300">
+                                    {{ interest.name }}
+                                </h4>
+                                <span v-if="interest.featured" class="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400 shadow-[0_0_6px_#818cf8]"></span>
+                            </div>
+                            <p v-if="interest.description" class="line-clamp-1 mt-0.5 font-sans text-[11px] text-slate-400">
+                                {{ interest.description }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-
             </div>
 
-
             <!-- ================================================= -->
-            <!-- CONTENT -->
+            <!-- 02. LANGUES -->
             <!-- ================================================= -->
 
-            <div
-                class="grid grid-cols-1 gap-10 lg:grid-cols-2"
-            >
-
-                <!-- ================================================= -->
-                <!-- CENTRES D'INTÉRÊT -->
-                <!-- ================================================= -->
-
-                <div
-                    v-if="interests.length"
-                    class="rounded-3xl border border-white/10 bg-[#101116] p-7"
-                >
-
-                    <!-- HEADER -->
-
-                    <div
-                        class="flex items-center gap-4 border-b border-white/10 pb-6"
-                    >
-
-                        <div
-                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-400/10"
-                        >
-
-                            <i
-                                class="fa-solid fa-heart text-xl text-indigo-400"
-                            ></i>
-
-                        </div>
-
-
-                        <div>
-
-                            <Title
-                                size="md"
-                                class="font-sans text-white"
-                            >
-                                Centres d'intérêt
-                            </Title>
-
-
-                            <Small
-                                class="font-sans text-slate-500"
-                            >
-                                Ce qui me passionne
-                            </Small>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- INTERESTS -->
-
-                    <div
-                        class="mt-6 space-y-4"
-                    >
-
-                        <article
-                            v-for="interest in interests"
-                            :key="interest.id"
-                            class="group flex items-start gap-4 rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-indigo-400/30 hover:bg-white/[0.06]"
-                        >
-
-                            <!-- ICON -->
-
-                            <div
-                                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-400/10"
-                            >
-
-                                <img
-                                    v-if="interest.icon"
-                                    :src="
-                                        interest.icon.startsWith('http')
-                                            ? interest.icon
-                                            : `/storage/${interest.icon}`
-                                    "
-                                    :alt="interest.name"
-                                    class="h-6 w-6 object-contain"
-                                />
-
-                                <i
-                                    v-else
-                                    class="fa-solid fa-star text-indigo-400"
-                                ></i>
-
-                            </div>
-
-
-                            <!-- CONTENT -->
-
-                            <div
-                                class="min-w-0 flex-1"
-                            >
-
-                                <Title
-                                    size="md"
-                                    class="font-sans text-white"
-                                >
-                                    {{ interest.name }}
-                                </Title>
-
-
-                                <div
-                                    v-if="interest.description"
-                                    class="mt-1"
-                                >
-
-                                    <Body
-                                        class="font-sans text-sm leading-6 text-slate-500"
-                                    >
-                                        {{ interest.description }}
-                                    </Body>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- FEATURED -->
-
-                            <span
-                                v-if="interest.featured"
-                                class="mt-1 h-2 w-2 shrink-0 rounded-full bg-indigo-400"
-                            ></span>
-
-                        </article>
-
-                    </div>
-
+            <div v-if="languages.length">
+                <!-- HEADER -->
+                <div class="mb-4 flex items-center gap-3">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+                    <h3 class="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400">
+                        Langues
+                    </h3>
+                    <div class="h-px flex-1 bg-white/10"></div>
                 </div>
 
-
-                <!-- ================================================= -->
-                <!-- LANGUES -->
-                <!-- ================================================= -->
-
-                <div
-                    v-if="languages.length"
-                    class="rounded-3xl border border-white/10 bg-[#101116] p-7"
-                >
-
-                    <!-- HEADER -->
-
+                <!-- CARROUSEL SUR MOBILE / GRILLE SUR DESKTOP -->
+                <div class="no-scrollbar flex gap-4 overflow-x-auto py-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
                     <div
-                        class="flex items-center gap-4 border-b border-white/10 pb-6"
+                        v-for="language in languages"
+                        :key="language.id"
+                        class="carousel-item group min-w-[200px] shrink-0 rounded-xl border border-white/10 bg-[#12131a] p-3.5 transition-all duration-300 hover:border-emerald-400/50 lg:w-full lg:shrink"
                     >
-
-                        <div
-                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-400/10"
-                        >
-
-                            <i
-                                class="fa-solid fa-language text-xl text-emerald-400"
-                            ></i>
-
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="font-sans text-sm font-semibold text-white transition group-hover:text-emerald-300">
+                                {{ language.name }}
+                            </span>
+                            <span class="font-mono text-xs text-slate-400">
+                                {{ language.level }}
+                            </span>
                         </div>
 
-
-                        <div>
-
-                            <Title
-                                size="md"
-                                class="font-sans text-white"
-                            >
-                                Langues
-                            </Title>
-
-
-                            <Small
-                                class="font-sans text-slate-500"
-                            >
-                                Mes compétences linguistiques
-                            </Small>
-
+                        <!-- BARRE DE PROGRESSION SUBTILE -->
+                        <div v-if="language.percentage !== null" class="mt-2.5">
+                            <div class="h-1 w-full overflow-hidden rounded-full bg-white/10">
+                                <div
+                                    class="h-full bg-emerald-400 shadow-[0_0_6px_#34d399] transition-all duration-500"
+                                    :style="{ width: `${Math.min(Math.max(Number(language.percentage) || 0, 0), 100)}%` }"
+                                ></div>
+                            </div>
+                            <span class="mt-1 block text-right font-mono text-[10px] text-emerald-400/80">
+                                {{ language.percentage }}%
+                            </span>
                         </div>
-
                     </div>
-
-
-                    <!-- LANGUAGES -->
-
-                    <div
-                        class="mt-6 space-y-6"
-                    >
-
-                        <article
-                            v-for="language in languages"
-                            :key="language.id"
-                            class="group"
-                        >
-
-                            <!-- NAME + LEVEL -->
-
-                            <div
-                                class="flex items-center justify-between gap-4"
-                            >
-
-                                <div
-                                    class="flex items-center gap-3"
-                                >
-
-                                    <div
-                                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/10"
-                                    >
-
-                                        <i
-                                            class="fa-solid fa-comment text-sm text-emerald-400"
-                                        ></i>
-
-                                    </div>
-
-
-                                    <Title
-                                        size="md"
-                                        class="font-sans text-white"
-                                    >
-                                        {{ language.name }}
-                                    </Title>
-
-                                </div>
-
-
-                                <Small
-                                    class="font-sans text-slate-500"
-                                >
-                                    {{ language.level }}
-                                </Small>
-
-                            </div>
-
-
-                            <!-- BAR -->
-
-                            <div
-                                v-if="language.percentage !== null"
-                                class="mt-4"
-                            >
-
-                                <div
-                                    class="h-2 overflow-hidden rounded-full bg-white/5"
-                                >
-
-                                    <div
-                                        class="h-full rounded-full bg-emerald-400 transition-all duration-700"
-                                        :style="{
-                                            width: `${Math.min(
-                                                Math.max(language.percentage, 0),
-                                                100
-                                            )}%`,
-                                        }"
-                                    ></div>
-
-                                </div>
-
-
-                                <div
-                                    class="mt-2 flex justify-between"
-                                >
-
-                                    <Small
-                                        class="font-sans text-slate-600"
-                                    >
-                                        Niveau
-                                    </Small>
-
-
-                                    <Small
-                                        class="font-sans text-slate-500"
-                                    >
-                                        {{ language.percentage }}%
-                                    </Small>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
                 </div>
-
             </div>
 
         </div>
-
     </section>
-
 </template>
+
+<style scoped>
+/* Masquer la barre de défilement tout en gardant le scroll tactile actif */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Auto-scroll uniquement sur les écrans inférieurs à lg (1024px) */
+@media (max-width: 1023px) {
+    @keyframes scrollAuto {
+        0% {
+            transform: translateX(0);
+        }
+        50% {
+            transform: translateX(-30%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    .carousel-item {
+        animation: scrollAuto 18s ease-in-out infinite;
+    }
+
+    /* Mettre en pause le défilement automatique au survol ou au toucher */
+    .no-scrollbar:hover .carousel-item,
+    .no-scrollbar:active .carousel-item {
+        animation-play-state: paused;
+    }
+}
+</style>

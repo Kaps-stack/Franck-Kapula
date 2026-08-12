@@ -291,20 +291,15 @@ onUnmounted(() => {
             class="flex min-h-[32rem] flex-col items-center justify-center px-7 py-16 text-center sm:px-10 lg:px-14"
         >
 
-            <Small
-                class="font-sans uppercase tracking-[0.3em] text-amber-400"
-            >
-                Prix & distinctions
-            </Small>
 
 
             <div class="mt-6">
 
-                <Heading
-                    class="font-sans text-5xl font-bold text-white sm:text-6xl lg:text-7xl"
+                <Title
+                    class="font-sans text-justify text-5xl font-bold text-white sm:text-6xl lg:text-7xl"
                 >
                     Mes réalisations
-                </Heading>
+                </Title>
 
             </div>
 
@@ -312,7 +307,7 @@ onUnmounted(() => {
             <div class="mx-auto mt-6 max-w-2xl">
 
                 <Body
-                    class="font-sans text-lg leading-8 text-slate-400"
+                    class="font-sans text-justify text-lg leading-8 text-slate-400"
                 >
                     Les prix, distinctions et reconnaissances obtenus
                     au cours de mon parcours académique et professionnel.

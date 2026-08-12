@@ -7,20 +7,9 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import Layout from "@/Layouts/PortfolioLayout.vue";
 import skillsAnimationData from "../../assets/animations/skills.json";
 
-import Body from "@/Components/Typography/Body.vue";
-import Heading from "@/Components/Typography/Heading.vue";
-import Small from "@/Components/Typography/Small.vue";
-import Title from "@/Components/Typography/Title.vue";
-
 defineOptions({
     layout: Layout,
 });
-
-/*
-|--------------------------------------------------------------------------
-| PROPS
-|--------------------------------------------------------------------------
-*/
 
 const props = defineProps({
     skills: {
@@ -36,19 +25,10 @@ const props = defineProps({
 */
 
 const animationSkills = ref(null);
-
 let skillsAnimation = null;
 
-/*
-|--------------------------------------------------------------------------
-| MOUNT
-|--------------------------------------------------------------------------
-*/
-
 onMounted(() => {
-    if (!animationSkills.value) {
-        return;
-    }
+    if (!animationSkills.value) return;
 
     skillsAnimation = lottie.loadAnimation({
         container: animationSkills.value,
@@ -59,12 +39,6 @@ onMounted(() => {
     });
 });
 
-/*
-|--------------------------------------------------------------------------
-| UNMOUNT
-|--------------------------------------------------------------------------
-*/
-
 onUnmounted(() => {
     if (skillsAnimation) {
         skillsAnimation.destroy();
@@ -74,19 +48,13 @@ onUnmounted(() => {
 
 /*
 |--------------------------------------------------------------------------
-| FEATURED SKILLS
+| COMPUTED
 |--------------------------------------------------------------------------
 */
 
 const featuredSkills = computed(() => {
     return props.skills.filter((skill) => skill.featured === true);
 });
-
-/*
-|--------------------------------------------------------------------------
-| SKILLS GROUPED BY CATEGORY
-|--------------------------------------------------------------------------
-*/
 
 const skillsByCategory = computed(() => {
     const groups = {};
@@ -110,521 +78,199 @@ const skillsByCategory = computed(() => {
     }));
 });
 
-/*
-|--------------------------------------------------------------------------
-| LEVEL
-|--------------------------------------------------------------------------
-*/
-
-const levelLabel = (level) => {
-    if (level === null || level === undefined) {
-        return null;
-    }
-
-    if (level >= 90) {
-        return "Expert";
-    }
-
-    if (level >= 75) {
-        return "Avancé";
-    }
-
-    if (level >= 50) {
-        return "Intermédiaire";
-    }
-
-    return "Débutant";
-});
-
-/*
-|--------------------------------------------------------------------------
-| MOTION
-|--------------------------------------------------------------------------
-*/
-
-const viewport = {
-    once: true,
-    amount: 0.15,
-};
-
-const reveal = {
-    initial: {
-        opacity: 0,
-        y: 30,
-    },
-
-    visible: {
-        opacity: 1,
-        y: 0,
-    },
-};
-
-const revealLeft = {
-    initial: {
-        opacity: 0,
-        x: -25,
-    },
-
-    visible: {
-        opacity: 1,
-        x: 0,
-    },
-};
-
-const revealScale = {
-    initial: {
-        opacity: 0,
-        scale: 0.96,
-    },
-
-    visible: {
-        opacity: 1,
-        scale: 1,
-    },
-};
-
-const motionTransition = {
-    duration: 0.55,
-    ease: "easeOut",
-};
+const viewport = { once: true, amount: 0.2 };
 </script>
 
 <template>
-    <!-- ========================================================= -->
-    <!-- HEADER / HERO -->
-    <!-- ========================================================= -->
+    <div class="min-h-screen pt-10 bg-[#08080a] text-slate-200">
 
-    <section class="mx-auto border border-white/10 bg-[#450057]">
-        <div
-            class="flex flex-col mt-10 items-center gap-10 px-4 py-8 sm:px-10 lg:flex-row lg:px-14 lg:py-16"
-        >
-            <!-- ================================================= -->
-            <!-- TEXT -->
-            <!-- ================================================= -->
+        <!-- ========================================================= -->
+        <!-- HERO COMPACT -->
+        <!-- ========================================================= -->
 
-            <Motion
-                tag="div"
-                class="w-full max-w-2xl lg:w-1/2"
-                :initial="reveal.initial"
-                :while-in-view="reveal.visible"
-                :viewport="viewport"
-                :transition="motionTransition"
-            >
-                <div class="mt-5">
-                    <Heading class="font-sans text-3xl text-white sm:text-5xl">
-                        Mes compétences
-                    </Heading>
-                </div>
+        <section class="border-b border-white/10 py-8 sm:py-12">
+            <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 sm:px-6 md:flex-row">
 
-                <div class="mt-6">
-                    <Body class="font-sans leading-8 text-white/60">
-                        Les technologies, outils et compétences que j'utilise
-                        pour concevoir et développer des solutions numériques
-                        modernes.
-                    </Body>
-                </div>
-            </Motion>
-
-            <!-- ================================================= -->
-            <!-- LOTTIE -->
-            <!-- ================================================= -->
-
-            <Motion
-                tag="div"
-                class="flex w-full items-center justify-center lg:w-1/2"
-                :initial="revealScale.initial"
-                :while-in-view="revealScale.visible"
-                :viewport="viewport"
-                :transition="{
-                    ...motionTransition,
-                    duration: 0.7,
-                }"
-            >
-                <div
-                    ref="animationSkills"
-                    class="h-64 w-64 sm:h-80 sm:w-80 lg:h-[24rem] lg:w-[24rem]"
-                ></div>
-            </Motion>
-        </div>
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- FEATURED SKILLS -->
-    <!-- ========================================================= -->
-
-    <section
-        v-if="featuredSkills.length"
-        class="bg-[#003457] px-4 py-10 sm:px-7 sm:py-12"
-    >
-        <!-- ================================================= -->
-        <!-- HEADING -->
-        <!-- ================================================= -->
-
-        <Motion
-            tag="div"
-            class="mb-8 px-2 sm:mb-12 sm:px-6"
-            :initial="reveal.initial"
-            :while-in-view="reveal.visible"
-            :viewport="viewport"
-            :transition="motionTransition"
-        >
-            <Title class="font-sans text-white">
-                Compétences principales
-            </Title>
-
-            <div class="mt-4">
-                <Body class="font-sans max-w-2xl text-slate-400">
-                    Les technologies que j'utilise le plus régulièrement dans
-                    mes projets.
-                </Body>
-            </div>
-        </Motion>
-
-        <!-- ================================================= -->
-        <!-- FEATURED SKILLS — FUTURISTIC DISPLAY -->
-        <!-- ================================================= -->
-
-        <div class="grid grid-cols-1 gap-3 px-2 sm:px-6 md:grid-cols-2 lg:grid-cols-3">
-            <Motion
-                v-for="(skill, index) in featuredSkills"
-                :key="skill.id"
-                tag="article"
-                class="group relative min-w-0 overflow-hidden border border-white/10 bg-[#101116] px-4 py-4 transition duration-300 hover:border-indigo-400/30 sm:px-5"
-                :initial="revealScale.initial"
-                :while-in-view="revealScale.visible"
-                :viewport="viewport"
-                :transition="{
-                    ...motionTransition,
-                    delay: index * 0.07,
-                }"
-            >
-                <!-- subtle futuristic line -->
-                <div
-                    class="absolute left-0 top-0 h-px w-0 bg-indigo-400 transition-all duration-500 group-hover:w-full"
-                ></div>
-
-                <div class="flex items-center gap-4">
-                    <!-- INDEX -->
-
-                    <Small
-                        class="hidden shrink-0 font-mono text-indigo-400/50 sm:block"
-                    >
-                        {{ String(index + 1).padStart(2, "0") }}
-                    </Small>
-
-                    <!-- ICON -->
-
-                    <div
-                        class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/10 bg-white/5"
-                    >
-                        <img
-                            v-if="skill.icon"
-                            :src="skill.icon"
-                            :alt="skill.name"
-                            class="h-6 w-6 object-contain"
-                        />
-
-                        <i
-                            v-else
-                            class="fa-solid fa-code text-indigo-400"
-                        ></i>
+                <!-- TEXTE -->
+                <div class="max-w-xl text-center md:text-left">
+                    <div class="mb-2 flex items-center justify-center gap-2 md:justify-start">
+                        <span class="h-1.5 w-1.5 rounded-full bg-violet-400 shadow-[0_0_8px_#a78bfa]"></span>
+                        <span class="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-violet-400">
+                            Stack Technique
+                        </span>
                     </div>
 
-                    <!-- NAME -->
+                    <h1 class="font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                        Mes Compétences
+                    </h1>
 
-                    <div class="min-w-0 flex-1">
-                        <Small
-                            size="md"
-                            class="block break-words whitespace-normal font-sans leading-5 text-white"
-                        >
-                            {{ skill.name }}
-                        </Small>
+                    <p class="mt-2 font-sans text-xs leading-relaxed text-slate-400 sm:text-sm">
+                        Les technologies et outils que j'utilise pour concevoir des applications web performantes.
+                    </p>
 
-                        <Small
-                            v-if="skill.category"
-                            class="mt-0.5 block truncate font-sans text-indigo-400"
-                        >
-                            {{ skill.category }}
-                        </Small>
-                    </div>
-
-                    <!-- LEVEL -->
-
-                    <div
-                        v-if="skill.level !== null"
-                        class="shrink-0 text-right"
-                    >
-                        <Small
-                            class="block font-mono text-xs text-slate-500"
-                        >
-                            {{ skill.level }}%
-                        </Small>
-
-                        <Small
-                            class="block font-sans text-[10px] text-slate-600"
-                        >
-                            {{ levelLabel(skill.level) }}
-                        </Small>
-                    </div>
-                </div>
-
-                <!-- PROGRESS -->
-
-                <div
-                    v-if="skill.level !== null"
-                    class="mt-3 h-px w-full overflow-hidden bg-white/5"
-                >
-                    <Motion
-                        tag="div"
-                        class="h-full bg-indigo-400"
-                        :initial="{ width: '0%' }"
-                        :while-in-view="{
-                            width: `${Math.min(
-                                Math.max(skill.level, 0),
-                                100,
-                            )}%`,
-                        }"
-                        :viewport="viewport"
-                        :transition="{
-                            duration: 0.9,
-                            delay: index * 0.07 + 0.25,
-                            ease: 'easeOut',
-                        }"
-                    />
-                </div>
-            </Motion>
-        </div>
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- ALL SKILLS -->
-    <!-- ========================================================= -->
-
-    <section
-        v-if="skillsByCategory.length"
-        class="bg-[#00574b] px-4 py-10 sm:px-7 sm:py-12"
-    >
-        <!-- ================================================= -->
-        <!-- HEADING -->
-        <!-- ================================================= -->
-
-        <Motion
-            tag="div"
-            class="mb-10 px-2 sm:mb-16 sm:px-6"
-            :initial="reveal.initial"
-            :while-in-view="reveal.visible"
-            :viewport="viewport"
-            :transition="motionTransition"
-        >
-            <Title class="font-sans text-white">
-                Toutes mes compétences
-            </Title>
-
-            <div class="mt-4">
-                <Body class="font-sans max-w-2xl text-slate-400">
-                    Retrouvez l'ensemble de mes compétences techniques et leur
-                    niveau de maîtrise.
-                </Body>
-            </div>
-        </Motion>
-
-        <!-- ================================================= -->
-        <!-- CATEGORIES -->
-        <!-- ================================================= -->
-
-        <div class="space-y-12 sm:space-y-16">
-            <Motion
-                v-for="(group, groupIndex) in skillsByCategory"
-                :key="group.category"
-                tag="div"
-                :initial="reveal.initial"
-                :while-in-view="reveal.visible"
-                :viewport="viewport"
-                :transition="{
-                    ...motionTransition,
-                    delay: groupIndex * 0.08,
-                }"
-            >
-                <!-- ================================================= -->
-                <!-- CATEGORY TITLE -->
-                <!-- ================================================= -->
-
-                <div class="mb-6 flex items-center gap-3 sm:mb-8 sm:gap-5">
-                    <div class="h-px flex-1 bg-white/10"></div>
-
-                    <Small
-                        class="font-sans text-center text-xs uppercase tracking-[0.2em] text-indigo-400 sm:text-sm"
-                    >
-                        {{ group.category }}
-                    </Small>
-
-                    <div class="h-px flex-1 bg-white/10"></div>
-                </div>
-
-                <!-- ================================================= -->
-                <!-- FUTURISTIC SKILLS LIST -->
-                <!-- ================================================= -->
-
-                <div class="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
-                    <Motion
-                        v-for="(skill, index) in group.skills"
-                        :key="skill.id"
-                        tag="article"
-                        class="group relative min-w-0 overflow-hidden border border-white/10 bg-[#101116] transition duration-300 hover:border-white/20"
-                        :initial="revealLeft.initial"
-                        :while-in-view="revealLeft.visible"
-                        :viewport="viewport"
-                        :transition="{
-                            ...motionTransition,
-                            delay: index * 0.05,
-                        }"
-                    >
-                        <!-- LEFT ACCENT -->
-
-                        <div
-                            class="absolute left-0 top-0 h-full w-px bg-indigo-400/0 transition duration-300 group-hover:bg-indigo-400/70"
-                        ></div>
-
-                        <div
-                            class="flex min-h-[76px] items-center gap-3 px-4 py-3 sm:px-5"
-                        >
-                            <!-- NUMBER -->
-
-                            <Small
-                                class="w-6 shrink-0 font-mono text-xs text-slate-600"
-                            >
-                                {{ String(index + 1).padStart(2, "0") }}
-                            </Small>
-
-                            <!-- ICON -->
-
-                            <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/10 bg-white/5"
-                            >
-                                <img
-                                    v-if="skill.icon"
-                                    :src="skill.icon"
-                                    :alt="skill.name"
-                                    class="h-6 w-6 object-contain"
-                                />
-
-                                <i
-                                    v-else
-                                    class="fa-solid fa-code text-sm text-indigo-400"
-                                ></i>
-                            </div>
-
-                            <!-- CONTENT -->
-
-                            <div class="min-w-0 flex-1">
-                                <Title
-                                    size="md"
-                                    class="font-sans break-words whitespace-normal leading-tight text-white"
-                                >
-                                    {{ skill.name }}
-                                </Title>
-
-                                <div
-                                    v-if="skill.level !== null"
-                                    class="mt-1.5 flex items-center gap-2"
-                                >
-                                    <Small
-                                        class="font-sans text-[10px] text-slate-600"
-                                    >
-                                        {{ levelLabel(skill.level) }}
-                                    </Small>
-
-                                    <div
-                                        class="h-px flex-1 overflow-hidden bg-white/5"
-                                    >
-                                        <Motion
-                                            tag="div"
-                                            class="h-full bg-indigo-400"
-                                            :initial="{ width: '0%' }"
-                                            :while-in-view="{
-                                                width: `${Math.min(
-                                                    Math.max(skill.level, 0),
-                                                    100,
-                                                )}%`,
-                                            }"
-                                            :viewport="viewport"
-                                            :transition="{
-                                                duration: 0.8,
-                                                delay:
-                                                    index * 0.05 + 0.25,
-                                                ease: 'easeOut',
-                                            }"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- PERCENTAGE -->
-
-                            <Small
-                                v-if="skill.level !== null"
-                                class="shrink-0 font-mono text-xs text-slate-500"
-                            >
-                                {{ skill.level }}%
-                            </Small>
+                    <!-- METRICS -->
+                    <div class="mt-4 flex items-center justify-center gap-6 font-mono text-xs text-slate-400 md:justify-start">
+                        <div>
+                            <span class="font-bold text-white">{{ skills.length }}</span>
+                            <span class="ml-1 text-[11px] text-slate-500">skills</span>
                         </div>
+                        <span class="h-3 w-px bg-white/10"></span>
+                        <div>
+                            <span class="font-bold text-white">{{ skillsByCategory.length }}</span>
+                            <span class="ml-1 text-[11px] text-slate-500">catégories</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOTTIE ANIMATION REDUITE -->
+                <div class="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+                    <div ref="animationSkills" class="h-full w-full opacity-80"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- FOCUS (COMPACT BADGES / PILLS) -->
+        <!-- ========================================================= -->
+
+        <section v-if="featuredSkills.length" class="border-b border-white/10 py-8">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6">
+
+                <div class="mb-4 flex items-center gap-3">
+                    <span class="font-mono text-xs text-violet-400">01.</span>
+                    <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Focus Principal
+                    </h2>
+                    <div class="h-px flex-1 bg-white/10"></div>
+                </div>
+
+                <!-- GRILLE DE BADGES ULTRA-COMPACTS -->
+                <div class="flex flex-wrap gap-2.5">
+                    <Motion
+                        v-for="(skill, index) in featuredSkills"
+                        :key="skill.id"
+                        :initial="{ opacity: 0, y: 10 }"
+                        :whileInView="{ opacity: 1, y: 0 }"
+                        :viewport="viewport"
+                        :transition="{ duration: 0.3, delay: index * 0.03 }"
+                        class="group flex items-center gap-2.5 rounded-lg border border-white/10 bg-[#101116] px-3 py-2 transition-all hover:border-violet-400/50 hover:bg-[#161822]"
+                    >
+                        <!-- ICON -->
+                        <div class="flex h-5 w-5 shrink-0 items-center justify-center">
+                            <img
+                                v-if="skill.icon"
+                                :src="skill.icon"
+                                :alt="skill.name"
+                                class="h-4 w-4 object-contain opacity-80 group-hover:opacity-100"
+                            />
+                            <i v-else class="fa-solid fa-code text-xs text-violet-400"></i>
+                        </div>
+
+                        <!-- NAME -->
+                        <span class="font-sans text-xs font-semibold text-white group-hover:text-violet-200">
+                            {{ skill.name }}
+                        </span>
+
+                        <!-- LEVEL -->
+                        <span v-if="skill.level !== null" class="font-mono text-[10px] text-slate-500">
+                            {{ skill.level }}%
+                        </span>
+
+                        <span class="h-1 w-1 rounded-full bg-violet-400 shadow-[0_0_6px_#a78bfa]"></span>
                     </Motion>
                 </div>
-            </Motion>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TOUTES LES COMPÉTENCES (LISTE SOBRE & MINIMALE) -->
+        <!-- ========================================================= -->
+
+        <section v-if="skillsByCategory.length" class="py-8 sm:py-12">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 space-y-8">
+
+                <div class="flex items-center gap-3">
+                    <span class="font-mono text-xs text-violet-400">02.</span>
+                    <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Toutes les compétences
+                    </h2>
+                    <div class="h-px flex-1 bg-white/10"></div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <div
+                        v-for="(group, groupIndex) in skillsByCategory"
+                        :key="group.category"
+                        class="rounded-xl border border-white/10 bg-[#101116] p-4"
+                    >
+                        <!-- TITRE CATEGORIE -->
+                        <div class="mb-3 flex items-center justify-between border-b border-white/10 pb-2.5">
+                            <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-violet-300">
+                                {{ group.category }}
+                            </h3>
+                            <span class="font-mono text-[10px] text-slate-500">
+                                {{ group.skills.length }}
+                            </span>
+                        </div>
+
+                        <!-- LISTE ULTRA FLUIDE DE COMPÉTENCES -->
+                        <div class="divide-y divide-white/5">
+                            <div
+                                v-for="(skill, index) in group.skills"
+                                :key="skill.id"
+                                class="group flex items-center justify-between py-2.5 transition-colors hover:bg-white/[0.02]"
+                            >
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <img
+                                        v-if="skill.icon"
+                                        :src="skill.icon"
+                                        :alt="skill.name"
+                                        class="h-4 w-4 shrink-0 object-contain opacity-70 group-hover:opacity-100"
+                                    />
+                                    <i v-else class="fa-solid fa-code text-xs text-slate-500 group-hover:text-violet-400 shrink-0"></i>
+
+                                    <span class="truncate font-sans text-xs font-medium text-slate-200 group-hover:text-white">
+                                        {{ skill.name }}
+                                    </span>
+                                </div>
+
+                                <!-- BARRE & POURCENTAGE -->
+                                <div v-if="skill.level !== null" class="flex items-center gap-3 shrink-0">
+                                    <div class="hidden w-20 sm:block">
+                                        <div class="h-1 w-full overflow-hidden rounded-full bg-white/10">
+                                            <div
+                                                class="h-full bg-violet-400 shadow-[0_0_6px_#a78bfa]"
+                                                :style="{ width: `${Math.min(Math.max(Number(skill.level) || 0, 0), 100)}%` }"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <span class="w-8 text-right font-mono text-[11px] text-slate-400">
+                                        {{ skill.level }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- RETOUR -->
+        <!-- ========================================================= -->
+
+        <div class="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+            <Link
+                href="/"
+                class="inline-flex items-center gap-2 font-mono text-xs text-slate-400 transition hover:text-white"
+            >
+                <span>←</span> Retour
+            </Link>
         </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- EMPTY -->
-    <!-- ========================================================= -->
-
-    <Motion
-        v-if="!skills.length"
-        tag="section"
-        class="mx-4 my-8 rounded-3xl border border-dashed border-white/10 bg-[#101116] p-8 text-center sm:p-16"
-        :initial="revealScale.initial"
-        :while-in-view="revealScale.visible"
-        :viewport="viewport"
-        :transition="motionTransition"
-    >
-        <div
-            class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5"
-        >
-            <i class="fa-solid fa-code text-2xl text-slate-500"></i>
-        </div>
-
-        <div class="mt-6">
-            <Title size="md" class="font-sans text-white">
-                Aucune compétence disponible
-            </Title>
-        </div>
-
-        <div class="mx-auto mt-3 max-w-md">
-            <Body class="font-sans text-slate-500">
-                Les compétences seront bientôt disponibles.
-            </Body>
-        </div>
-    </Motion>
-
-    <!-- ========================================================= -->
-    <!-- BACK -->
-    <!-- ========================================================= -->
-
-    <Motion
-        tag="div"
-        class="mt-12 mb-10 px-4 sm:px-7"
-        :initial="reveal.initial"
-        :while-in-view="reveal.visible"
-        :viewport="viewport"
-        :transition="motionTransition"
-    >
-        <Link
-            href="/"
-            class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 font-sans text-sm text-white transition hover:bg-white hover:text-slate-900"
-        >
-            <span> ← </span>
-
-            Retour à l'accueil
-        </Link>
-    </Motion>
+    </div>
 </template>
